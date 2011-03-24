@@ -1,0 +1,112 @@
+<html> 
+  <head> 
+    <title>index</title> 
+    <script src="../src/math/glmatrix.js"></script> 
+    
+
+
+    
+    <script src="../src/Nodes/node.js"></script> 
+    <script src="../src/Nodes/nodeExtended.js"></script> 
+    <script src="../src/Nodes/cameraNode.js"></script>
+    <script src="../src/Nodes/geometry.js"></script>
+    
+    <script src="../src/material/materialList.js"></script>
+    <script src="../src/material/basematerial.js"></script> 
+    <script src="../src/material/linesMaterial.js"></script> 
+    
+    <script src="../src/renderer/renderer.js"></script>
+    <script src="../src/renderer/mesh.js"></script> 
+    <script src="../src/renderer/vertexbuffer.js"></script> 
+    <script src="../src/renderer/texture.js"></script> 
+    
+    <script src="../src/primitives/triangle.js"></script> 
+    <script src="../src/primitives/quad.js"></script> 
+    <script src="../src/primitives/sphere.js"></script> 
+ 
+    
+    <script src="../src/controller/controller.js"></script> 
+    <script src="../src/controller/positioncontroller.js"></script> 
+    <script src="../src/controller/pathcontroller.js"></script> 
+    <script src="../src/controller/distanceAngleController.js"></script> 
+    
+    <script src="../src/input/inputmanager.js"></script> 
+    <script src="../src/input/keyboard.js"></script> 
+    
+    <script src="../src/application.js"></script> 
+    <style type="text/css"> 
+    </style> 
+    
+  </head> 
+  <body> 
+    <div id="console1"><div>Console: </div></div> 
+    <script> 
+      var testApp = new app();
+      var rootNode = testApp.rootNode;
+      var camera = testApp.renderer.camera;
+      var input = testApp.input;
+      
+      camera.translation = [0.0, 0.0, 35.0];
+      camera.addController(new distanceAngleController({}));
+ 
+      
+      input.addMapping("left",function(){
+        console.log("hello");
+      });
+      
+      
+      var solarsystem = new node({"name":"solarsytem","parent":rootNode});
+      
+      /* sun */
+      var position_sun = new node({"name":"position_sun","parent":solarsystem});
+     
+      var sun = new sphere({"name":"sun","parent":position_sun})
+      sun.addController(new positionController({"rpm":Math.PI*10,"axis":[-0.5,-1,0]}));
+      sun.materialOptions.texture = new texture({"url":"../src/textures/sun.jpg"});
+      
+      
+      /* earth */
+      var rotation_earth= new node({"name":"rotation_earth","parent":solarsystem,"rotation": [0,1,0,0]});
+      rotation_earth.addController(new positionController({"rpm":Math.PI*10,"axis":[0,-1,0]}));
+      var position_earth = new node({"name":"position_earth","parent":rotation_earth});
+      position_earth.translation= [-4,0,0];
+      
+      var earth = new sphere({"name":"earth","parent":position_earth})
+      earth.scale = [0.1,0.1,0.1];
+      earth.addController(new positionController({"rpm":Math.PI*10,"axis":[-0.2,-1,0]}));
+      earth.materialOptions.texture = new texture({"url":"../src/textures/earth.jpg"});
+      
+      /*moon */
+      
+      var rotation_moon= new node({"name":"rotation_moon","parent":position_earth});
+      rotation_moon.addController(new positionController({"rpm":Math.PI*120,"axis":[0,0,-1]}));
+      var position_moon = new node({"name":"position_moon","parent":rotation_moon});
+      position_moon.translation = [-1,0,0];
+      
+      var moon = new sphere({"name":"moon","parent":position_moon})
+      moon.scale = [0.03,0.03,0.03];
+      moon.addController(new positionController({"rpm":Math.PI*10,"axis":[-1,-0.2,0]}));
+      moon.material = linesMaterial;
+      
+      /*updated update */
+      var d = document.getElementById("console1");
+      var fps = [],total;
+      var a = {};
+      testApp.update = function(info){
+        var b;
+        fps.push(info.timeElapsed);
+        if (fps.length > 10){
+          fps.splice(0,1);
+        };
+        total = 0
+        for (i = 0;i< fps.length;i++){
+          total += fps[i];
+        };
+        b = parseInt(1000/(total/fps.length));
+        a[b] = (a[b] || 0) + 1;
+        d.innerHTML = "<p>fps: " + parseInt(1000/(total/fps.length)) + "</p><p> rendered: " + info.counter + "<p>";
+      };
+      testApp.startRendering();
+    </script> 
+  </body> 
+</html>
