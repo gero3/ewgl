@@ -1,6 +1,8 @@
 (function(global){
   var undef;
   
+  var controller = global.controller;
+  
   var positionController = function(args){
     this._node =args.node;
     this.rpm = args.rpm || 0;
@@ -47,4 +49,4 @@
   
   global.positionController = positionController;
   
-}(window));
+}(EWGL));

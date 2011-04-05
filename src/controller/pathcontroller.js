@@ -1,6 +1,8 @@
 (function(global){
   var undef;
   
+  var controller = global.controller;
+  
   var pathController = function(args){
     this._node =args.node;
     this.path = args.path || [];
@@ -62,4 +64,4 @@
   
   global.pathController= pathController;
   
-}(window));
+}(EWGL));

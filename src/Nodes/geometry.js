@@ -1,5 +1,7 @@
 (function(global){
   var undef;
+  var node = global.node;
+  
   var geometry = function geometry(args){
     //important to keep the prototypal chain clean
     if (args === undef){
@@ -7,8 +9,8 @@
     };
     node.call(this,args);
     
-    this.mesh = args.mesh || new mesh();
-    this.material = args.material || materialList.baseMaterial;
+    this.mesh = args.mesh || new global.mesh();
+    this.material = args.material || global.materialList.baseMaterial;
     this.materialOptions =  args.materialOptions || {};
     
     return this;
@@ -83,4 +85,4 @@
   
   
   
-}(window));
+}(EWGL));

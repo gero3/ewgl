@@ -1,5 +1,10 @@
 (function(global){
   var undef;
+  
+  var node = global.node;  
+  var geometry = global.geometry;
+  var vertexbuffer = global.vertexbuffer;
+  
   var triangle = function(args){
     geometry.call(this,args);
     this.mesh.addVertexbuffer(new vertexbuffer({"type" :"position",
@@ -30,7 +35,7 @@
   };                                                       
   
   global.triangle = triangle;
-}(window));
+}(EWGL));
 
 
 

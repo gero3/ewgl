@@ -1,5 +1,7 @@
 (function(global){
   
+  var node = global.node;
+  
   var undef;
   var cameraNode = function cameraNode(args){
     //important to keep the prototypal chain clean
@@ -95,7 +97,7 @@
       "get" : function(){
         if (this.flags.changedInverseWorldMatrix){
           updateInverseMatrix(this);
-        };
+        }
         return this._inverseMatrix;
       }
     }
@@ -111,7 +113,7 @@
       this.aspect = canvas.width/canvas.height;
     } else { 
       this.aspect = 1;
-    };
+    }
   };
   
   cameraNode.prototype.setTransformFlag = function(){
@@ -126,5 +128,5 @@
   
   global.cameraNode = cameraNode;
   
-}(window))
+}(EWGL))
   

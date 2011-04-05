@@ -1,10 +1,8 @@
 <html> 
   <head> 
     <title>index</title> 
+    <script src="../src/core.js"></script>
     <script src="../src/math/glmatrix.js"></script> 
-    
-
-
     
     <script src="../src/Nodes/node.js"></script> 
     <script src="../src/Nodes/nodeExtended.js"></script> 
@@ -24,6 +22,8 @@
     <script src="../src/primitives/quad.js"></script> 
     <script src="../src/primitives/sphere.js"></script> 
  
+    <script src="../src/loaders/loader.js"></script> 
+    <script src="../src/loaders/imageLoader.js"></script>
     
     <script src="../src/controller/controller.js"></script> 
     <script src="../src/controller/positioncontroller.js"></script> 
@@ -32,6 +32,7 @@
     
     <script src="../src/input/inputmanager.js"></script> 
     <script src="../src/input/keyboard.js"></script> 
+    <script src="../src/input/mouse.js"></script>
     
     <script src="../src/application.js"></script> 
     <style type="text/css"> 
@@ -41,52 +42,56 @@
   <body> 
     <div id="console1"><div>Console: </div></div> 
     <script> 
-      var testApp = new app();
+      var testApp = new EWGL.app();
       var rootNode = testApp.rootNode;
       var camera = testApp.renderer.camera;
       var input = testApp.input;
       
-      camera.translation = [0.0, 0.0, 35.0];
-      camera.addController(new distanceAngleController({}));
+      camera.translation = [0.0, 15.0, 35.0];
+      camera.addController(new  EWGL.distanceAngleController({}));
  
+ 
+      input.addKeyHandler({"keyName" : input.keyboard.keys.A,
+                           "name" : "TEST"});
       
       input.addMapping("left",function(){
         console.log("hello");
       });
       
       
-      var solarsystem = new node({"name":"solarsytem","parent":rootNode});
+      var solarsystem = new EWGL.node({"name":"solarsytem","parent":rootNode});
       
       /* sun */
-      var position_sun = new node({"name":"position_sun","parent":solarsystem});
+      var position_sun = new EWGL.node({"name":"position_sun","parent":solarsystem});
      
-      var sun = new sphere({"name":"sun","parent":position_sun})
-      sun.addController(new positionController({"rpm":Math.PI*10,"axis":[-0.5,-1,0]}));
-      sun.materialOptions.texture = new texture({"url":"../src/textures/sun.jpg"});
-      
+      var sun = new  EWGL.sphere({"name":"sun","parent":position_sun})
+      sun.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[-0.5,-1,0]}));
+      sun.materialOptions.texture = new EWGL.texture({"url":"http://ewgl.erbix.com/js/nodes2/textures/sun.jpg"});
+      //sun.material = linesMaterial;
       
       /* earth */
-      var rotation_earth= new node({"name":"rotation_earth","parent":solarsystem,"rotation": [0,1,0,0]});
-      rotation_earth.addController(new positionController({"rpm":Math.PI*10,"axis":[0,-1,0]}));
-      var position_earth = new node({"name":"position_earth","parent":rotation_earth});
+      var rotation_earth= new EWGL.node({"name":"rotation_earth","parent":solarsystem,"rotation": [0,1,0,0]});
+      rotation_earth.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[0,-1,0]}));
+      var position_earth = new EWGL.node({"name":"position_earth","parent":rotation_earth});
       position_earth.translation= [-4,0,0];
       
-      var earth = new sphere({"name":"earth","parent":position_earth})
+      var earth = new EWGL.sphere({"name":"earth","parent":position_earth})
       earth.scale = [0.1,0.1,0.1];
-      earth.addController(new positionController({"rpm":Math.PI*10,"axis":[-0.2,-1,0]}));
-      earth.materialOptions.texture = new texture({"url":"../src/textures/earth.jpg"});
-      
+      earth.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[-0.2,-1,0]}));
+      earth.materialOptions.texture = new EWGL.texture({"url":"http://ewgl.erbix.com/js/nodes2/textures/earth.jpg"});
+
+ 
       /*moon */
       
-      var rotation_moon= new node({"name":"rotation_moon","parent":position_earth});
-      rotation_moon.addController(new positionController({"rpm":Math.PI*120,"axis":[0,0,-1]}));
-      var position_moon = new node({"name":"position_moon","parent":rotation_moon});
+      var rotation_moon= new EWGL.node({"name":"rotation_moon","parent":position_earth});
+      rotation_moon.addController(new EWGL.positionController({"rpm":Math.PI*120,"axis":[0,0,-1]}));
+      var position_moon = new EWGL.node({"name":"position_moon","parent":rotation_moon});
       position_moon.translation = [-1,0,0];
       
-      var moon = new sphere({"name":"moon","parent":position_moon})
+      var moon = new EWGL.sphere({"name":"moon","parent":position_moon})
       moon.scale = [0.03,0.03,0.03];
-      moon.addController(new positionController({"rpm":Math.PI*10,"axis":[-1,-0.2,0]}));
-      moon.material = linesMaterial;
+      moon.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[-1,-0.2,0]}));
+      moon.material = EWGL.linesMaterial;
       
       /*updated update */
       var d = document.getElementById("console1");

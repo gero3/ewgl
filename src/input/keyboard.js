@@ -1,5 +1,7 @@
 (function(global){
   
+  var inputManager = EWGL.inputManager;
+  
   var keyhandlers = {};
   var keydownhandlers = {};
   var keyuphandlers = {};
@@ -162,4 +164,4 @@
   inputManager.keyboard.keys = keys;
   inputManager.keyboard.keyspressed = keypressed;
   
-}(window))
+}(EWGL))

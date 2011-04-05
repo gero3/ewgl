@@ -1,5 +1,7 @@
 (function(global){
-  
+    
+  materialList = global.materialList;
+ 
   var linesMaterial = {
     "geometries" : [],
     "zOrdered": false,
@@ -8,7 +10,7 @@
   Object.defineProperties(linesMaterial,{
     "renderer":{
       "get":function(){
-        return renderer;
+        return global.renderer;
       }
     }
   });
@@ -30,7 +32,7 @@
       createShaderProgram();
     };
     shaderProgram =  linesMaterial.shaderProgram;
-    renderer.useProgram(shaderProgram);
+    r.useProgram(shaderProgram);
     //setcameraMatrix
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, c.perspective);
     gl.uniformMatrix4fv(shaderProgram.cMatrixUniform, false, c.inverseMatrix);
@@ -119,4 +121,4 @@
   
   global.linesMaterial = linesMaterial;
   
-}(window));
+}(EWGL));

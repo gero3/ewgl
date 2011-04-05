@@ -1,5 +1,10 @@
 (function(global){
   var undef;
+    
+  var node = global.node;  
+  var geometry = global.geometry;
+  var vertexbuffer = global.vertexbuffer;
+  
   var Sphere = function(args){
     geometry.call(this,args);
     
@@ -87,4 +92,4 @@
   };                                                       
   
   global.sphere = Sphere;
-}(window));
+}(EWGL));

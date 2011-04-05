@@ -1,14 +1,3 @@
-window.requestAnimFrame = (function() {
-  return window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-      window.setTimeout(callback, 1000/60);
-    };
-})();
-
 (function(global){
   
   var info = {};
@@ -16,17 +5,17 @@ window.requestAnimFrame = (function() {
   var app = function(){
     var camera,renderer2,rootNode;
     
-    renderer2 = renderer;
-    this.renderer = renderer;
+    renderer2 = global.renderer;
+    this.renderer = global.renderer;
     
-    this.materialList = materialList;
+    this.materialList = global.materialList;
     
-    this.input = inputManager;
+    this.input = global.inputManager;
     
-    rootNode = new node({"name":"rootNode"});
+    rootNode = new global.node({"name":"rootNode"});
     this.rootNode = rootNode;
-    camera = new cameraNode({"name":"mainCamera","parent":this.rootNode});
-    renderer.camera = camera;
+    camera = new global.cameraNode({"name":"mainCamera","parent":this.rootNode});
+    renderer2.camera = camera;
     
     this.renderer.canvas = createcanvas();
     
@@ -79,5 +68,5 @@ window.requestAnimFrame = (function() {
   
   global.app = app;
   
-}(window));
+}(EWGL));
 

@@ -3,8 +3,8 @@
   var materialList = {
     
     "materials" : [],
-    "baseMaterial" : undef  
-    
+    "CustomShaderScripts" : [],
+    "baseMaterial" : undef
     
   };
   
@@ -13,12 +13,12 @@
       materialList.baseMaterial = material;
     }; 
     materialList.materials.push(material);
-    
   };
+  
   
   materialList.render = function(info){
     var i,l = materialList.materials.length;
-    renderer.clear();
+    global.renderer.clear();
     for(var i = 0;i<l;i++){
       if (info.counter === materialList.materials[i].lastUpdate){
         materialList.materials[i].render(info);
@@ -31,4 +31,4 @@
   
   
   
-}(window));
+}(EWGL));

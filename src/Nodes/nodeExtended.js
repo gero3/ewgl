@@ -1,4 +1,5 @@
 (function(global){
+  var node = EWGL.node;
   
   var p = node.prototype;
   
@@ -79,5 +80,5 @@
   };
   
   
-}(window))
+}(EWGL))
   

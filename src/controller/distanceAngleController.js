@@ -1,6 +1,8 @@
 (function(global){
   var undef;
   
+  var controller = global.controller;
+  
   var distanceAngleController= function(args){
     this.distance = 0;
     this.angle = vec3.create();
@@ -63,4 +65,4 @@
   
   global.distanceAngleController = distanceAngleController;
   
-}(window));
+}(EWGL));

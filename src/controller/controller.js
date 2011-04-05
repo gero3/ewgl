@@ -20,9 +20,13 @@
         
   
   controller.prototype._node = undef;
+  
+  //overrideable 
   controller.prototype.update = function(){};
+  
+  //overrideable
   controller.prototype.changedNode = function(){};
   
   global.controller = controller;
   
-}(window));
+}(EWGL));

@@ -53,4 +53,4 @@
   
   global.inputManager = inputmanager;
   
-}(window));
+}(EWGL));

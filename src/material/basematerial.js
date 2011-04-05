@@ -1,14 +1,18 @@
 (function(global){
+  var undef;
+  
+  materialList = global.materialList;
   
   var basematerial = {
     "geometries" : [],
     "zOrdered": false,
+    "shaderProgram" : undef,
     "lastUpdate": -1
   };
   Object.defineProperties(basematerial,{
     "renderer":{
       "get":function(){
-        return renderer;
+        return global.renderer;
       }
     }
   });
@@ -18,7 +22,8 @@
   
   basematerial.render = function(info){
     
-    var i,l = basematerial.geometries.length,
+    var i,renderer = basematerial.renderer,
+        l = basematerial.geometries.length,
         gl = basematerial.renderer.gl,
         shaderProgram,
         geom;
@@ -26,7 +31,7 @@
     //setshader
     if (! basematerial.shaderProgram){
       createShaderProgram();
-    };
+    }
     shaderProgram =  basematerial.shaderProgram;
     renderer.useProgram(shaderProgram);
     
@@ -121,10 +126,11 @@
   
   
   var createShaderProgram = function(){
+    var start = +(new Date());
     var r = basematerial.renderer;
     
     var shaderProgram = r.createShaderProgram(vertexshader,fragmentshader);
-    
+    console.log("shaderprogram alone:" + ( +(new Date()) - start));
     shaderProgram.vertexPositionAttribute =r.getAttribute(shaderProgram,"aVertexPosition");
     shaderProgram.vertexColorAttribute =r.getAttribute(shaderProgram,"aVertexColor");
     shaderProgram.TexturePosition =r.getAttribute(shaderProgram,"aTexturePosition");
@@ -136,6 +142,7 @@
     shaderProgram.samplerUniform = r.getUniform(shaderProgram, "uSampler");
     
     basematerial.shaderProgram = shaderProgram;
+    console.log( +(new Date()) - start);
   };
   
   
@@ -144,4 +151,4 @@
   
   global.baseMaterial = basematerial;
   
-}(window));
+}(EWGL));
