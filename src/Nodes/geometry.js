@@ -32,7 +32,7 @@
         if (mesh !== this._mesh){
           this._mesh= mesh;
           this._mesh.flags.changedMesh = true;
-        };
+        }
       }
     }, 
     "_material":{
@@ -47,19 +47,19 @@
       "set" : function(material){
         if (this._material && this._material.geometries.indexOf(this) > -1){
           this._material.geometries.splice(this._material.geometries.indexOf(this),1);
-        };
+        }
         if (material){ 
           this._material= material;
           material.geometries.push(this);
           this.flags.changedMaterial = true;
-        };
+        }
       }
     }
   });
   geometry.prototype.SetColor = function(color){
     if (!this.mesh.vertexbuffers.position){
       return;
-    };
+    }
     var data = this.mesh.vertexbuffers.position.getData();
     
     

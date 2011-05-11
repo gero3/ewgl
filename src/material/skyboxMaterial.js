@@ -39,7 +39,7 @@
     
     //setcameraMatrix
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, basematerial.renderer.camera.perspective);
-    gl.uniformMatrix4fv(shaderProgram.cMatrixUniform, false, basematerial.renderer.camera.inverseMatrix);
+    gl.uniformMatrix4fv(shaderProgram.cMatrixUniform, false, mat4.inverse(quat4.toMat4(basematerial.renderer.camera.worldRotation)));
     
     //render Geometries
     for(i=0;i<l;i++){
@@ -163,6 +163,6 @@
   
   materialList.registerMaterial(basematerial);
   
-  global.baseMaterial = basematerial;
+  global.skyboxMaterial = basematerial;
   
 }(EWGL));

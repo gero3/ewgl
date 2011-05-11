@@ -1,0 +1,65 @@
+<html> 
+  <head> 
+    <title>index</title> 
+    <script src="../src/core.js"></script>
+    <script src="../src/math/glmatrix.js"></script> 
+    
+    <script src="../src/input/inputmanager.js"></script> 
+    <script src="../src/input/keyboard.js"></script> 
+    <script src="../src/input/mouse.js"></script>
+    
+    <script src="../src/Nodes/node.js"></script> 
+    <script src="../src/Nodes/nodeExtended.js"></script> 
+    <script src="../src/Nodes/cameraNode.js"></script>
+    <script src="../src/Nodes/geometry.js"></script>
+    
+    <script src="../src/material/materialList.js"></script>
+    <script src="../src/material/basematerial.js"></script> 
+    <script src="../src/material/linesMaterial.js"></script> 
+    
+    <script src="../src/renderer/renderer.js"></script>
+    <script src="../src/renderer/mesh.js"></script> 
+    <script src="../src/renderer/vertexbuffer.js"></script> 
+    <script src="../src/renderer/texture.js"></script> 
+    
+    <script src="../src/primitives/triangle.js"></script> 
+    <script src="../src/primitives/quad.js"></script> 
+    <script src="../src/primitives/sphere.js"></script> 
+ 
+    <script src="../src/loaders/loader.js"></script> 
+    <script src="../src/loaders/imageLoader.js"></script>
+    
+    <script src="../src/controller/controller.js"></script> 
+    <script src="../src/controller/positioncontroller.js"></script> 
+    <script src="../src/controller/pathcontroller.js"></script> 
+    <script src="../src/controller/distanceAngleController.js"></script> 
+        
+    <script src="../src/stats.js"></script> 
+    <script src="../src/application.js"></script> 
+    <style type="text/css"> 
+    </style> 
+    
+  </head> 
+  <body> 
+    <div id="console1"><div>Console: </div></div> 
+    <script> 
+      var testApp = new EWGL.app();
+      var rootNode = testApp.rootNode;
+      var camera = testApp.camera;
+      var input = testApp.input;
+      
+      camera.translation = [0.0, 0.0, 35.0];
+      camera.addController(new EWGL.distanceAngleController({}));      
+      
+      rootNode.attachNewQuad({'name':"test"});
+      
+      /*updated update */
+      var d = document.getElementById("console1");
+      testApp.update = function(info){
+        d.innerHTML = "<p>fps: " + info.fps + "</p><p> rendered: " + info.counter + "<p>";
+      };
+      testApp.startRendering();
+      
+    </script> 
+  </body> 
+</html>

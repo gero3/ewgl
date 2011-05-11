@@ -30,7 +30,7 @@
     //setshader
     if (! linesMaterial.shaderProgram){
       createShaderProgram();
-    };
+    }
     shaderProgram =  linesMaterial.shaderProgram;
     r.useProgram(shaderProgram);
     //setcameraMatrix

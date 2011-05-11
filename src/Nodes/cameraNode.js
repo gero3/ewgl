@@ -63,7 +63,7 @@
     },
     
     "_far": {
-      "value" : 100,
+      "value" : 10000,
       "configurable" : true,   
       "writable": true
     },
@@ -128,5 +128,5 @@
   
   global.cameraNode = cameraNode;
   
-}(EWGL))
+}(EWGL));
   

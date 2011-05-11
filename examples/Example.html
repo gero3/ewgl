@@ -4,6 +4,15 @@
     <script src="../src/core.js"></script>
     <script src="../src/math/glmatrix.js"></script> 
     
+    <script src="../src/input/inputmanager.js"></script> 
+    <script src="../src/input/keyboard.js"></script> 
+    <script src="../src/input/mouse.js"></script>
+    
+    <script src="../src/renderer/renderer.js"></script>
+    <script src="../src/renderer/mesh.js"></script> 
+    <script src="../src/renderer/vertexbuffer.js"></script> 
+    <script src="../src/renderer/texture.js"></script>
+    
     <script src="../src/Nodes/node.js"></script> 
     <script src="../src/Nodes/nodeExtended.js"></script> 
     <script src="../src/Nodes/cameraNode.js"></script>
@@ -12,52 +21,78 @@
     <script src="../src/material/materialList.js"></script>
     <script src="../src/material/basematerial.js"></script> 
     <script src="../src/material/linesMaterial.js"></script> 
-    
-    <script src="../src/renderer/renderer.js"></script>
-    <script src="../src/renderer/mesh.js"></script> 
-    <script src="../src/renderer/vertexbuffer.js"></script> 
-    <script src="../src/renderer/texture.js"></script> 
+    <script src="../src/material/skyboxMaterial.js"></script>
     
     <script src="../src/primitives/triangle.js"></script> 
     <script src="../src/primitives/quad.js"></script> 
+    <script src="../src/primitives/cube.js"></script>
     <script src="../src/primitives/sphere.js"></script> 
- 
-    <script src="../src/loaders/loader.js"></script> 
-    <script src="../src/loaders/imageLoader.js"></script>
+    <script src="../src/primitives/skybox.js"></script>
     
     <script src="../src/controller/controller.js"></script> 
     <script src="../src/controller/positioncontroller.js"></script> 
     <script src="../src/controller/pathcontroller.js"></script> 
     <script src="../src/controller/distanceAngleController.js"></script> 
     
-    <script src="../src/input/inputmanager.js"></script> 
-    <script src="../src/input/keyboard.js"></script> 
-    <script src="../src/input/mouse.js"></script>
+    <script src="../src/loaders/loader.js"></script> 
+    <script src="../src/loaders/imageLoader.js"></script>
+    <script src="../src/loaders/textureLoader.js"></script>
     
+    <script src="../src/stats.js"></script>
     <script src="../src/application.js"></script> 
     <style type="text/css"> 
+    html,body,canvas {
+      margin: 0;
+	    padding: 0;
+	    border: 0;
+	    font-size: 100%;
+	    font: inherit;
+	    vertical-align: baseline;
+    }
+    canvas {
+      display:block;
+      position:absolute;
+      left: 0px;
+      top:0px;
+    }
+    #console1 {
+      z-index: 1000;
+      position:absolute;
+      left: 0px;
+      top:0px;
+      display:block;
+      color:white;
+    }
     </style> 
     
   </head> 
   <body> 
-    <div id="console1"><div>Console: </div></div> 
+    <div id="console1"><div>console:</div></div> 
     <script> 
       var testApp = new EWGL.app();
       var rootNode = testApp.rootNode;
-      var camera = testApp.renderer.camera;
+      var camera = testApp.camera;
       var input = testApp.input;
+      var assets = testApp.assetManager;
       
-      camera.translation = [0.0, 15.0, 35.0];
-      camera.addController(new  EWGL.distanceAngleController({}));
- 
- 
-      input.addKeyHandler({"keyName" : input.keyboard.keys.A,
-                           "name" : "TEST"});
       
-      input.addMapping("left",function(){
-        console.log("hello");
-      });
-      
+      camera.translation = [0.0, 10.0, 35.0];
+      camera.addController(new EWGL.distanceAngleController({}));      
+      /*
+      var skybox1 = new EWGL.cube({"name":"skybox1","parent": rootNode,"scale":[1000,1000,1000]});
+      skybox1.material = EWGL.skyboxMaterial;
+      skybox1.materialOptions.texture = assets.loadTexture({"url":"assets/nebula1.jpg"});
+      */
+      var skybox2 = new EWGL.skybox({"name":"skybox2",
+                                     "parent": rootNode,
+                                     "scale":[1000,1000,1000],
+                                     "front"  : assets.loadTexture({"url":"assets/nebula.jpg"}),
+                                     "back"   : assets.loadTexture({"url":"assets/nebula1.jpg"}),
+                                     "left"   : assets.loadTexture({"url":"assets/hot_nebula_90.jpg"}),
+                                     "right"  : assets.loadTexture({"url":"assets/hot_nebula_270.jpg"}),
+                                     "top"    : assets.loadTexture({"url":"assets/hot_nebula_top.jpg"}),
+                                     "bottom" : assets.loadTexture({"url":"assets/hot_nebula_bottom.jpg"}),
+                                     });
       
       var solarsystem = new EWGL.node({"name":"solarsytem","parent":rootNode});
       
@@ -66,20 +101,34 @@
      
       var sun = new  EWGL.sphere({"name":"sun","parent":position_sun})
       sun.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[-0.5,-1,0]}));
-      sun.materialOptions.texture = new EWGL.texture({"url":"http://ewgl.erbix.com/js/nodes2/textures/sun.jpg"});
+      sun.materialOptions.texture = assets.loadTexture({"url":"http://ewgl.erbix.com/js/nodes2/textures/sun.jpg"});
       //sun.material = linesMaterial;
       
       /* earth */
-      var rotation_earth= new EWGL.node({"name":"rotation_earth","parent":solarsystem,"rotation": [0,1,0,0]});
-      rotation_earth.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[0,-1,0]}));
+      var rotation_earth= new EWGL.node({"name":"rotation_earth","parent":solarsystem,"rotation": [0,0,1,0]});
+      rotation_earth.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[0,1,0]}));
       var position_earth = new EWGL.node({"name":"position_earth","parent":rotation_earth});
       position_earth.translation= [-4,0,0];
       
       var earth = new EWGL.sphere({"name":"earth","parent":position_earth})
       earth.scale = [0.1,0.1,0.1];
       earth.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[-0.2,-1,0]}));
-      earth.materialOptions.texture = new EWGL.texture({"url":"http://ewgl.erbix.com/js/nodes2/textures/earth.jpg"});
+      earth.materialOptions.texture = assets.loadTexture({"url":"http://ewgl.erbix.com/js/nodes2/textures/earth.jpg"});
 
+/*
+//venus
+      var rotation_venus= new EWGL.node({"name":"rotation_venus","parent":solarsystem,"rotation": [0,-1,0,0]});
+      rotation_venus.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[0,0,-1]}));
+      var position_venus = new EWGL.node({"name":"position_venus","parent":rotation_venus});
+      position_venus.translation= [-3,0,0];
+      
+      var venus = new EWGL.sphere({"name":"venus","parent":position_venus})
+      venus.scale = [0.08,0.08,0.08];
+      venus.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[-0.2,-1,0]}));
+      venus.materialOptions.texture = assets.loadTexture({"url":"http://ewgl.erbix.com/js/nodes2/textures/earth.jpg"});
+
+ */
+      
  
       /*moon */
       
@@ -88,30 +137,19 @@
       var position_moon = new EWGL.node({"name":"position_moon","parent":rotation_moon});
       position_moon.translation = [-1,0,0];
       
-      var moon = new EWGL.sphere({"name":"moon","parent":position_moon})
-      moon.scale = [0.03,0.03,0.03];
+      var moon = new EWGL.sphere({"name":"moon","parent":position_moon,"scale":[0.03,0.03,0.03]})
+      //moon.scale = [0.03,0.03,0.03];
       moon.addController(new EWGL.positionController({"rpm":Math.PI*10,"axis":[-1,-0.2,0]}));
       moon.material = EWGL.linesMaterial;
       
       /*updated update */
       var d = document.getElementById("console1");
-      var fps = [],total;
-      var a = {};
       testApp.update = function(info){
-        var b;
-        fps.push(info.timeElapsed);
-        if (fps.length > 10){
-          fps.splice(0,1);
-        };
-        total = 0
-        for (i = 0;i< fps.length;i++){
-          total += fps[i];
-        };
-        b = parseInt(1000/(total/fps.length));
-        a[b] = (a[b] || 0) + 1;
-        d.innerHTML = "<p>fps: " + parseInt(1000/(total/fps.length)) + "</p><p> rendered: " + info.counter + "<p>";
+        //camera.lookAt(position_earth.worldTranslation);
+        d.innerHTML = "<p>fps: " + info.fps + "</p><p> rendered: " + info.counter + "<p>";
       };
-      testApp.startRendering();
+ 
+      
     </script> 
   </body> 
 </html>

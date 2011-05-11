@@ -2,7 +2,7 @@
   var undef;
   
   var controller = function(args){
-    this._node =args.node;  
+    this._node =args.node || undef;  
   };
   
   Object.defineProperties(controller.prototype,{

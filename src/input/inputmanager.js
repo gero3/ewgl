@@ -11,6 +11,10 @@
     inputmanager.mappings[name].push(func);
   };   
   
+  inputmanager.mappingExists = function(name){
+    return !!inputmanager.mappings[name];
+  };
+  
   inputmanager.update = function(info){
     var i, l = inputmanager.updateCallbacks.length;
     for (i= 0;i<l;i++){
