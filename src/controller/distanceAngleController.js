@@ -20,6 +20,8 @@
                             "keyName":input.mouse.mouseButtons.LEFT
   });
   
+  input.addMouseWheelHandler({"name":"distanceAngleController.wheel"});
+  
   var distanceAngleController= function(args){
     this.distance = 0;
     this.height = 0;
@@ -75,6 +77,12 @@
                              self.angle -= 0.05;
                            }
                            update(self ,node ,targetPosition);
+                        });
+                        
+     input.addMapping("distanceAngleController.wheel",
+                        function(delta){
+                          self.distance -= 1* delta;
+                          update(self ,node ,targetPosition);
                         });
       node.lookAt(targetPosition);
     }

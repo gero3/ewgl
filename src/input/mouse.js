@@ -11,9 +11,10 @@
   var mouseDragHandlers = {},
       mouseUpHandlers = {},
       mouseDownHandlers = {},
+      mouseWheelHandlers = {},
       mousePressed = {},
       buttonsPressed = 0,
-      startPosition = {};
+      startPosition = {},
       prevPosition = [],
       position = [];
       
@@ -75,6 +76,34 @@
     }
   };
   
+  function wheel(event){
+    var delta = 0;
+    if (!event) {
+       event = window.event;
+    }
+    if (event.wheelDelta) { 
+      delta = event.wheelDelta/120;
+      if (window.opera) {
+              delta = -delta;
+      }
+    } else if (event.detail) {
+      delta = -event.detail/3;
+    }
+    
+    var mousehandlerslist = mouseWheelHandlers[0],l, handler,i;
+
+    if (mousehandlerslist){
+      l = mousehandlerslist.length;
+      for (i = 0; i<l; i++){
+          inputManager.activateAction(mousehandlerslist[i].name,delta);
+      }
+    }
+    if (event.preventDefault) {
+      event.preventDefault();
+      event.returnValue = false;
+    }
+  }
+  
   var mousemove = function(e){
     position = [e.screenX,e.screenY];  
   };
@@ -83,10 +112,15 @@
   document.addEventListener("mousedown",mouseDownUpdater,true);
   document.addEventListener("mouseup",mouseUpUpdater,true);
   document.addEventListener("mousemove",mousemove,true);
+  window.addEventListener('DOMMouseScroll', wheel, true);
+
+  window.onmousewheel = document.onmousewheel = wheel;
+  
   inputManager.updateCallbacks.push(mouseUpdater);
   
   inputManager.addMouseDragHandler = inputManager.createAddHandler(mouseDragHandlers);
   inputManager.addMouseUpHandler = inputManager.createAddHandler(mouseUpHandlers);
+  inputManager.addMouseWheelHandler = inputManager.createAddHandler(mouseWheelHandlers);
   inputManager.addMouseDownHandler = inputManager.createAddHandler(mouseDownHandlers);
   
   inputManager.mouse = {};

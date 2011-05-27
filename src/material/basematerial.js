@@ -28,7 +28,7 @@
         l = basematerial.geometries.length,
         gl = basematerial.renderer.gl,
         shaderProgram,
-        geom;
+        geom,mesh;
     
     //setshader
     if (! basematerial.shaderProgram){
@@ -45,25 +45,25 @@
     for(i=0;i<l;i++){
       geom = basematerial.geometries[i];
       if(geom.lastUpdate === info.counter){
-        
+        mesh = geom.mesh;
         //setmatrix
         gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, geom.matrix);
         
         //draw
-        if (geom.mesh.vertexbuffers.position.flags.dataChanged){
-          renderer.AdjustGLBuffer(geom.mesh.vertexbuffers.position);
+        if (mesh.vertexbuffers.position.flags.dataChanged){
+          renderer.AdjustGLBuffer(mesh.vertexbuffers.position);
         }
         
-        if (geom.mesh.vertexbuffers.color.flags.dataChanged){
-          renderer.AdjustGLBuffer(geom.mesh.vertexbuffers.color);
+        if (mesh.vertexbuffers.color.flags.dataChanged){
+          renderer.AdjustGLBuffer(mesh.vertexbuffers.color);
         }
         
-        if (geom.mesh.vertexbuffers.texture.flags.dataChanged){
-          renderer.AdjustGLBuffer(geom.mesh.vertexbuffers.texture);
+        if (mesh.vertexbuffers.texture.flags.dataChanged){
+          renderer.AdjustGLBuffer(mesh.vertexbuffers.texture);
         }
         
-        if (geom.mesh.vertexbuffers.indices.flags.dataChanged){
-          renderer.AdjustGLELMENTBuffer(geom.mesh.vertexbuffers.indices);
+        if (mesh.vertexbuffers.indices.flags.dataChanged){
+          renderer.AdjustGLELMENTBuffer(mesh.vertexbuffers.indices);
         }
         
         if (!geom.materialOptions.texture){
@@ -86,21 +86,21 @@
         
         
         
-        gl.bindBuffer(gl.ARRAY_BUFFER,geom.mesh.vertexbuffers.position.glObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.position.glObject);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
         
-        gl.bindBuffer(gl.ARRAY_BUFFER,geom.mesh.vertexbuffers.color.glObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.color.glObject);
         gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
         
-        gl.bindBuffer(gl.ARRAY_BUFFER,geom.mesh.vertexbuffers.texture.glObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.texture.glObject);
         gl.vertexAttribPointer(shaderProgram.TexturePosition, 2, gl.FLOAT, false, 0, 0);
         
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, geom.materialOptions.texture.texture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.mesh.vertexbuffers.indices.glObject);
-        gl.drawElements(gl.TRIANGLES, geom.mesh.vertexbuffers.indices.size, gl.UNSIGNED_SHORT, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.vertexbuffers.indices.glObject);
+        gl.drawElements(gl.TRIANGLES, mesh.vertexbuffers.indices.size, gl.UNSIGNED_SHORT, 0);
         
       }
     }

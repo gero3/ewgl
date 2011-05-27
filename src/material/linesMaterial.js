@@ -25,7 +25,7 @@
         r = linesMaterial.renderer,
         c = r.camera,
         shaderProgram,
-        geom;
+        geom,mesh;
     
     //setshader
     if (! linesMaterial.shaderProgram){
@@ -41,31 +41,31 @@
     for(i=0;i<l;i++){
       geom = linesMaterial.geometries[i];
       if(geom.lastUpdate === info.counter){
-        
+        mesh = geom.mesh;
         //setmatrix
         gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, geom.matrix);
         
         //draw
-        if (geom.mesh.vertexbuffers.position.flags.dataChanged){
-          r.AdjustGLBuffer(geom.mesh.vertexbuffers.position);
+        if (mesh.vertexbuffers.position.flags.dataChanged){
+          r.AdjustGLBuffer(mesh.vertexbuffers.position);
         };
         
-        if (geom.mesh.vertexbuffers.color.flags.dataChanged){
-          r.AdjustGLBuffer(geom.mesh.vertexbuffers.color);
+        if (mesh.vertexbuffers.color.flags.dataChanged){
+          r.AdjustGLBuffer(mesh.vertexbuffers.color);
         };
         
-        if (geom.mesh.vertexbuffers.indices.flags.dataChanged){
-          r.AdjustGLELMENTBuffer(geom.mesh.vertexbuffers.indices);
+        if (mesh.vertexbuffers.indices.flags.dataChanged){
+          r.AdjustGLELMENTBuffer(mesh.vertexbuffers.indices);
         };        
         
-        gl.bindBuffer(gl.ARRAY_BUFFER,geom.mesh.vertexbuffers.position.glObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.position.glObject);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
         
-        gl.bindBuffer(gl.ARRAY_BUFFER,geom.mesh.vertexbuffers.color.glObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.color.glObject);
         gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
         
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.mesh.vertexbuffers.indices.glObject);
-        gl.drawElements(gl.LINES, geom.mesh.vertexbuffers.indices.size, gl.UNSIGNED_SHORT, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.vertexbuffers.indices.glObject);
+        gl.drawElements(gl.LINES, mesh.vertexbuffers.indices.size, gl.UNSIGNED_SHORT, 0);
 
       };
     };
