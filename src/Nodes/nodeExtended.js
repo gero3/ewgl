@@ -41,7 +41,7 @@
         m01 = left[1], m11 = up[1], m21 = direction[1],
         m02 = left[2], m12 = up[2], m22 = direction[2];
     
-    console.log(vec3.set(left,[]),vec3.set(up,[]),direction);
+    //console.log(vec3.set(left,[]),vec3.set(up,[]),direction);
     
     var t = m00 + m11 + m22,s,x,y,z,w;
     

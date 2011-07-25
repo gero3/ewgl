@@ -5,13 +5,13 @@
   
   materialList = global.materialList;
   
-  var basematerial = {
+  var skyboxMaterial = {
     "geometries" : [],
     "zOrdered": false,
     "shaderProgram" : undef,
     "lastUpdate": -1
   };
-  Object.defineProperties(basematerial,{
+  Object.defineProperties(skyboxMaterial,{
     "renderer":{
       "get":function(){
         return global.renderer;
@@ -20,30 +20,30 @@
   });
   
   
-  basematerial.update = function(){};
+  skyboxMaterial.update = function(){};
   
-  basematerial.render = function(info){
+  skyboxMaterial.render = function(info){
     
-    var i,renderer = basematerial.renderer,
-        l = basematerial.geometries.length,
-        gl = basematerial.renderer.gl,
+    var i,renderer = skyboxMaterial.renderer,
+        l = skyboxMaterial.geometries.length,
+        gl = skyboxMaterial.renderer.gl,
         shaderProgram,
         geom,mesh;
     
     //setshader
-    if (! basematerial.shaderProgram){
+    if (! skyboxMaterial.shaderProgram){
       createShaderProgram();
     }
-    shaderProgram =  basematerial.shaderProgram;
+    shaderProgram =  skyboxMaterial.shaderProgram;
     renderer.useProgram(shaderProgram);
     
     //setcameraMatrix
-    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, basematerial.renderer.camera.perspective);
-    gl.uniformMatrix4fv(shaderProgram.cMatrixUniform, false, mat4.inverse(quat4.toMat4(basematerial.renderer.camera.worldRotation)));
+    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, skyboxMaterial.renderer.camera.perspective);
+    gl.uniformMatrix4fv(shaderProgram.cMatrixUniform, false, mat4.inverse(quat4.toMat4(skyboxMaterial.renderer.camera.worldRotation)));
     
     //render Geometries
     for(i=0;i<l;i++){
-      geom = basematerial.geometries[i];
+      geom = skyboxMaterial.geometries[i];
       if(geom.lastUpdate === info.counter){
         mesh = geom.mesh;
         //setmatrix
@@ -141,7 +141,7 @@
   
   var createShaderProgram = function(){
     var start = +(new Date());
-    var r = basematerial.renderer;
+    var r = skyboxMaterial.renderer;
     
     var shaderProgram = r.createShaderProgram(vertexshader,fragmentshader);
     //console.log("shaderprogram alone:" + ( +(new Date()) - start));
@@ -155,14 +155,14 @@
     shaderProgram.mvMatrixUniform = r.getUniform(shaderProgram, "uMVMatrix");
     shaderProgram.samplerUniform = r.getUniform(shaderProgram, "uSampler");
     
-    basematerial.shaderProgram = shaderProgram;
+    skyboxMaterial.shaderProgram = shaderProgram;
     //console.log( +(new Date()) - start);
   };
   
   
   
-  materialList.registerMaterial(basematerial);
+  materialList.registerMaterial(skyboxMaterial);
   
-  global.skyboxMaterial = basematerial;
+  global.skyboxMaterial = skyboxMaterial;
   
 }(EWGL));

@@ -18,7 +18,14 @@
   };
   
   
+  
   skybox.prototype = new node();
+  
+  node.prototype.attachNewSkybox = function(args){
+    var t = new skybox(args);
+    this.addChildren(t);
+    return t;
+  };
   
   global.skybox = skybox;
   

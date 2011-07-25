@@ -1,42 +1,38 @@
 var fs = require('fs');
+var http = require('http');
+var buffer = require('buffer');
 
-var close = function(fd){
-  fs.close(fd,function (err, fd) {
-    if (err) throw err;
-    console.log('file is closed');
+
+
+var options = {
+  host: 'ewgl.erbix.com',
+  port: 80,
+  path: '/js/nodes2/textures/sun.jpg'
+};
+
+http.get(options, function(res) {
+  var test = [];
+  //res.setEncoding('utf8');
+  res.addListener('data',function(data){
+    test.push(data.copy(new Buffer(data.length)));
   });
-}
-
-fs.stat('examples/Example2.html',function (err, stats) {
-  if (err) throw err;
-  console.log(stats.size);
-});
-
-fs.open('examples/Example.html', 'r', function (err, fd) {
-  if (err) throw err;
-  console.log('file is open');
-  var buf = new Buffer(30);
-  fs.read(fd,buf,0,30,0,function(err, bytesRead, buffer){
-    if (err) throw err;
-    console.log(buffer.toString('utf8'));
+  res.addListener('end',function(){
+    var length= 0;
+    for (var i = 0;i<test.length;i++){
+      length += test[i].length;
+    }
     
-    close(fd);
-
-  });
+    var test1 = new Buffer(length);
+    length = 0;
+    for (var i = 0;i<test.length;i++){
+      test1.copy(test1,length);
+      length += test[i].length;
+    }
+    
+    fs.writeFileSync("testTest.jpg",test1);
+    console.log(test.length);
+  });  
+  console.log("Got response: " + JSON.stringify(res.headers));
+}).on('error', function(e) {
+  console.log("Got error: " + e.message);
 });
-
-
-/*
-Asynchronous file open. See open(2). Flags can be 'r', 'r+', 'w', 'w+', 'a', or 'a+'. mode defaults to 0666. The callback gets two arguments (err, fd).
-fs.read(fd, buffer, offset, length, position, [callback]);
-
-fs.readFile('build/testbuild.js', function (err, data) {
-  if (err) throw err;
-  console.log(data);
-  });
-/*
-fs.writeFile('build/testbuild.txt', 'Hello Node', function (err) {
-  if (err) throw err;
-  console.log('It\'s saved!');
-});
-*/

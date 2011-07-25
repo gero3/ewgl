@@ -116,9 +116,9 @@
     }
   };
   
-  cameraNode.prototype.setTransformFlag = function(){
+  cameraNode.prototype.setUpdateMatrixFlag = function(){
     this.flags.changedInverseWorldMatrix = true;
-    node.prototype.setTransformFlag.apply(this);
+    node.prototype.setUpdateMatrixFlag.apply(this);
   };
   
   var updateInverseMatrix = function(node1){

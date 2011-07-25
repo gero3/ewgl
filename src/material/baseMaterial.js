@@ -3,7 +3,8 @@
   
   var emptyTexture;
   
-  materialList = global.materialList;
+  var materialList = global.materialList;
+  var lights = global.lights
   
   var basematerial = {
     "geometries" : [],
@@ -11,6 +12,7 @@
     "shaderProgram" : undef,
     "lastUpdate": -1
   };
+  
   Object.defineProperties(basematerial,{
     "renderer":{
       "get":function(){
@@ -40,6 +42,10 @@
     //setcameraMatrix
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, basematerial.renderer.camera.perspective);
     gl.uniformMatrix4fv(shaderProgram.cMatrixUniform, false, basematerial.renderer.camera.inverseMatrix);
+    
+    var ambientlights = lights.usedLights[lights.types.ambientLight];
+    
+    gl.uniform3fv(shaderProgram.AmbientUniform, ambientlights[0].color);
     
     //render Geometries
     for(i=0;i<l;i++){
@@ -120,24 +126,29 @@
       "uniform mat4 uMVMatrix;" + 
       "uniform mat4 uPMatrix;" +
       "uniform mat4 uCMatrix;" +
+      "uniform vec3 uAmbientColor;" +
       "varying vec4 vColor;" +
       "varying vec2 vTexture;" + 
-      "" + 
+      "varying vec3 vLightWeighting;" +
+      " " + 
       "void main(void) {" +
       "  gl_Position = uPMatrix * (uCMatrix * uMVMatrix) * vec4(aVertexPosition, 1.0);" +
       "  vColor = aVertexColor;" +
       "  vTexture = aTexturePosition;" +
+      "  vLightWeighting = uAmbientColor;" +
       "}";
   var fragmentshader = "#ifdef GL_ES\n" +
       "  precision highp float; \n" +
       "#endif \n" + 
       "varying vec4 vColor;" +
       "varying vec2 vTexture;" +
+      "varying vec3 vLightWeighting;" +
       "uniform sampler2D uSampler;" + 
       "void main(void) { \n" +
-      "gl_FragColor = texture2D(uSampler, vec2(vTexture.s, vTexture.t)); \n" +
+      "vec4 textureColor = texture2D(uSampler, vec2(vTexture.s, vTexture.t)); \n" +
+      "gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);" +
       "}\n";
-  
+  //
   
   var createShaderProgram = function(){
     var start = +(new Date());
@@ -153,6 +164,7 @@
     shaderProgram.pMatrixUniform = r.getUniform(shaderProgram, "uPMatrix");
     shaderProgram.cMatrixUniform = r.getUniform(shaderProgram, "uCMatrix");
     shaderProgram.mvMatrixUniform = r.getUniform(shaderProgram, "uMVMatrix");
+    shaderProgram.AmbientUniform = r.getUniform(shaderProgram, "uAmbientColor");
     shaderProgram.samplerUniform = r.getUniform(shaderProgram, "uSampler");
     
     basematerial.shaderProgram = shaderProgram;

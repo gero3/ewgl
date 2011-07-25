@@ -3,7 +3,6 @@
   var materialList = {
     
     "materials" : [],
-    "CustomShaderScripts" : [],
     "baseMaterial" : undef
     
   };
@@ -17,6 +16,9 @@
   
   
   materialList.render = function(info){
+    
+    update(info);
+    
     var i,l = materialList.materials.length;
     global.renderer.clear();
     for(i = 0;i<l;i++){
@@ -24,8 +26,24 @@
         materialList.materials[i].render(info);
       }
     }
+  };
+  
+  var update = function(info){
+    var lights = global.lights,AllLights,light;
+    if (lights){
+      AllLights =lights.lights;
+      lights.usedLights = {};
+      for(var j = 0;j< AllLights.length;j++){
+        light = AllLights[j];
+        if (light.lastUpdate === info.counter){
+          lights.usedLights[light.type] = lights.usedLights[light.type] || [];
+          lights.usedLights[light.type].push(light);
+        };
+      };
+    };
     
   };
+  
   
   global.materialList = materialList;
   

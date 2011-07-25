@@ -65,6 +65,10 @@
     
   };
   
+  geometry.prototype.setTexture = function(texture){
+    this.materialOptions.texture = texture;
+  };
+  
   geometry.prototype.update = function(info){
     node.prototype.update.call(this,info);
     this.material.lastUpdate = info.counter;

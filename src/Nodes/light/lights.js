@@ -3,7 +3,12 @@
   var lights = {
     lights : [],
     flags : {},
-    types : []
+    types : {
+      ambientLight: 1,
+      directionalLight: 2
+    },
+    usedLights : {}
+    
     
   };
   
@@ -12,6 +17,7 @@
     lights.flags.changedLights = true;
   };
   
+  global.lights = lights;
   
   
 }(EWGL));

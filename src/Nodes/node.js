@@ -97,7 +97,7 @@
       },
       "set" : function(rot){
           this._rotation = rot;
-          this.setTransformFlag();
+          this.setUpdateMatrixFlag();
       }
     },
     
@@ -112,7 +112,7 @@
       },
       "set" : function(pos){
           this._translation = pos;
-          this.setTransformFlag();
+          this.setUpdateMatrixFlag();
       }
     },
     
@@ -127,7 +127,7 @@
       },
       "set" : function(scale){
           this._scale= scale;
-          this.setTransformFlag();
+          this.setUpdateMatrixFlag();
       }
     },
     
@@ -166,7 +166,7 @@
       "set" : function(parent){
         if (parent !==this._parent){
           setParent(this,parent);
-          this.setTransformFlag();
+          this.setUpdateMatrixFlag();
         };
       }
     },
@@ -178,8 +178,8 @@
     },
     "matrix" : {
       "get" : function(){
-        if (this.flags.transform){
-          calculateTransform(this);
+        if (this.flags.UpdateMatrix){
+          calculateUpdateMatrix(this);
         };
         return this._matrix;
       }
@@ -192,8 +192,8 @@
     },
     "worldScale" : {
       "get" : function(){
-        if (this.flags.transform){
-          calculateTransform(this);
+        if (this.flags.UpdateMatrix){
+          calculateUpdateMatrix(this);
         };
         return this._worldScale;
       }
@@ -206,8 +206,8 @@
     },
     "worldTranslation" : {
       "get" : function(){
-        if (this.flags.transform){
-          calculateTransform(this);
+        if (this.flags.UpdateMatrix){
+          calculateUpdateMatrix(this);
         };
         return this._worldTranslation;
       }
@@ -220,8 +220,8 @@
     },
     "worldRotation" : {
       "get" : function(){
-        if (this.flags.transform){
-          calculateTransform(this);
+        if (this.flags.UpdateMatrix){
+          calculateUpdateMatrix(this);
         };
         return this._worldRotation;
       }
@@ -263,8 +263,8 @@
     };  
   };
   
-  node.prototype.setTransformFlag = function(){
-    setTransformFlag(this);
+  node.prototype.setUpdateMatrixFlag = function(){
+    setUpdateMatrixFlag(this);
   };
   
   node.prototype.removeAllChildren = function(){
@@ -290,21 +290,21 @@
     setParent(this,parent);
   };
   
-  node.prototype._calculateTransform = function(){
-    calculateTransform(this);
+  node.prototype._calculateUpdateMatrix = function(){
+    calculateUpdateMatrix(this);
   };
   
   
   
   
-  var setTransformFlag = function(node1){
+  var setUpdateMatrixFlag = function(node1){
     var i,l,c;
-    if (!node1.flags.transform){
-      node1.flags.transform = true;
+    if (!node1.flags.UpdateMatrix){
+      node1.flags.UpdateMatrix = true;
       c = node1.children;
       l = c.length;
       for(i = 0;i <l;i++){
-        c[i].setTransformFlag();
+        c[i].setUpdateMatrixFlag();
       };
     };
   };
@@ -356,9 +356,9 @@
   };
 
   
-  var calculateTransform = function(node1){
+  var calculateUpdateMatrix = function(node1){
     var parent = node1.parent;
-    if(node1.flags.transform){
+    if(node1.flags.UpdateMatrix){
       if (parent){
         vec3.scaleVec3(node1.scale,parent.worldScale,node1._worldScale);
         quat4.multiply(parent.worldRotation,node1.rotation,node1._worldRotation);
@@ -374,14 +374,24 @@
       mat4.scale(node1._matrix,node1._worldScale);
       mat4.multiply(node1._matrix,quat4.toMat4(node1._worldRotation));
       mat4.setTranslation(node1._matrix,node1._worldTranslation);
-      node1.flags.transform = false;
+      node1.flags.UpdateMatrix = false;
     };
   };
   
-  node.get = function(name){
-    return  node.Nodes[name];
+  node.$ = function(name){
+    return node.Nodes[name];
   };
     
+  node.getById = function(ID){
+    return node.NodesById[ID];
+  };
+  
+  node.prototype.attachNewNode = function(args){
+    args = args || {};
+    args.parent = this;
+    return new node(args);
+  };
+      
   node.Nodes = {};
   node.NodesById = {};
   
