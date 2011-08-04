@@ -13,6 +13,12 @@
     <script src="../src/input/keyboard.js"></script> 
     <script src="../src/input/mouse.js"></script>
     
+    <script src="../src/renderer/renderer.js"></script>
+    <script src="../src/renderer/mesh.js"></script> 
+    <script src="../src/renderer/vertexbuffer.js"></script> 
+    <script src="../src/renderer/texture.js"></script> 
+    <script src="../src/renderer/shaderExtension.js"></script>
+    
     <script src="../src/Nodes/node.js"></script> 
     <script src="../src/Nodes/nodeExtended.js"></script> 
     <script src="../src/Nodes/cameraNode.js"></script>
@@ -21,16 +27,12 @@
     <script src="../src/Nodes/light/lights.js"></script> 
     <script src="../src/Nodes/light/light.js"></script> 
     <script src="../src/Nodes/light/ambientLight.js"></script>
+    <script src="../src/Nodes/light/directionalLight.js"></script>
     
     <script src="../src/material/materialList.js"></script>
     <script src="../src/material/baseMaterial.js"></script> 
     <script src="../src/material/linesMaterial.js"></script> 
     <script src="../src/material/skyboxMaterial.js"></script>
-    
-    <script src="../src/renderer/renderer.js"></script>
-    <script src="../src/renderer/mesh.js"></script> 
-    <script src="../src/renderer/vertexbuffer.js"></script> 
-    <script src="../src/renderer/texture.js"></script> 
     
     <script src="../src/primitives/triangle.js"></script> 
     <script src="../src/primitives/quad.js"></script> 
@@ -65,18 +67,20 @@
       height : 10px;
       top: 10px
     };
+    
     </style> 
     
   </head>   
   <body> 
   
-    <input id="ambientLightSlider" type="range" name="ambientLight" min="0" max="100" step="1" value="100" />
+    <input id="ambientLightSlider" type="range" name="ambientLight" min="0" max="1" step="0.001" value="1" />
     <div id="console1"><div>Console: </div></div> 
     <script> 
       (function(){
           var element = document.getElementById("ambientLightSlider"); 
           element.addEventListener("change",function(){
-              testApp.mainLight.color = vec3.create([element.value/100,element.value/100,element.value/100]);
+              testApp.mainLight.color = vec3.create([element.value,element.value,element.value]);
+              
           });
       }());
         
@@ -106,6 +110,11 @@
                                               "bottom":  assets.loadTexture({"url":"assets/hot_nebula_bottom.jpg"})
       });
       
+      var light = rootNode.attachNewDirectionalLight({"name": "secondLight",
+                                                      "color": vec3.create([1, 1, 1]),
+                                                      "direction": vec3.create([0,1,-1])
+      });
+      
       var solarsystem = rootNode.attachNewNode({"name":"solarsystem"});
       
       var sun = solarsystem.attachNewSphere({"name":"sun"});
@@ -115,6 +124,7 @@
       var d = document.getElementById("console1");
       testApp.update = function(info){
         d.innerHTML = "<p>fps: " + info.fps + "</p><p> rendered: " + info.counter + "<p>";
+        light.direction[1] = (Math.abs(info.counter % 400 - 200)-100)/20
       };
       testApp.startRendering();
       

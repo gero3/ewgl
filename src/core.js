@@ -1,4 +1,4 @@
-window.requestAnimFrame = (function() {
+window.requestAnimationFrame = (function() {
   return  window.requestAnimationFrame || 
           window.webkitRequestAnimationFrame || 
           window.mozRequestAnimationFrame || 
@@ -8,6 +8,8 @@ window.requestAnimFrame = (function() {
     window.setTimeout(callback, 1000 / 60);
   };
 })();
+
+console 
 
 var EWGL = {};
 

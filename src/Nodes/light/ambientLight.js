@@ -2,6 +2,7 @@
   
   var light = global.light;
   var lights = global.lights;
+  var node = global.node;
   
   var ambientLight = function ambientLight(args){
     //important to keep the prototypal chain clean
@@ -12,6 +13,12 @@
   
   ambientLight.prototype = new light();
   ambientLight.prototype.type = lights.types.ambientLight;
+  
+  node.prototype.attachNewAmbientLight = function(args){
+    args = args || {};
+    args.parent = this;
+    return new ambientLight(args);
+  };
   
   global.ambientLight = ambientLight;
   

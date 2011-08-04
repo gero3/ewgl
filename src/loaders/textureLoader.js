@@ -30,7 +30,6 @@
       if (onError){
         onError(args);
       }
-      loader.counter -= 1;
     };
   };
   

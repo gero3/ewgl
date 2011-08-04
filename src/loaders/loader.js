@@ -6,7 +6,6 @@
     "extensions" : {},
     "specialCases" : [],
     "defaultLoader" : undef,
-    "counter" : 0,
     "onLoadedCompleted":function(){}
   };
   

@@ -23,7 +23,7 @@
       
       this.mainLight = new global.ambientLight({
         "name": "mainLight",
-        "color": vec3.create([0.5, 0.5, 0.5]),
+        "color": vec3.create([0.0, 0.0, 0.0]),
         "parent": this.rootNode
       });
       
@@ -55,7 +55,7 @@
     var applicationtest = this;
     timestart = +(new Date());
     var render = function() {
-        requestAnimFrame(render);
+        requestAnimationFrame(render);
         applicationtest.stats.update(info);
         applicationtest.update(info);
         applicationtest.input.update(info);

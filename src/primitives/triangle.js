@@ -28,6 +28,7 @@
   
   triangle.prototype = new geometry();
   triangle.prototype.material = undef;
+  
   node.prototype.attachNewTriangle = function(args){ 
     var t = new triangle(args);
     this.addChildren(t);

@@ -716,6 +716,34 @@ mat4.inverse = function(mat, dest) {
   return dest;
 };
 
+mat3.transpose = function(mat, dest) {
+        // If we are transposing ourselves we can skip a few steps but have to cache some values
+        if(!dest || mat == dest) { 
+                var a01 = mat[1], a02 = mat[2];
+                var a12 = mat[5];
+                
+        mat[1] = mat[3];
+        mat[2] = mat[6];
+        mat[3] = a01;
+        mat[5] = mat[7];
+        mat[6] = a02;
+        mat[7] = a12;
+                return mat;
+        }
+        
+        dest[0] = mat[0];
+        dest[1] = mat[3];
+        dest[2] = mat[6];
+        dest[3] = mat[1];
+        dest[4] = mat[4];
+        dest[5] = mat[7];
+        dest[6] = mat[2];
+        dest[7] = mat[5];
+        dest[8] = mat[8];
+        return dest;
+};
+
+
 /*
  * mat4.toMat3
  * Copies the upper 3x3 elements of a mat4 into a mat3
