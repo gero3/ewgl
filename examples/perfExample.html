@@ -103,32 +103,18 @@
       camera.translation = [0.0, 10.0, 35.0];
       camera.addController(new EWGL.distanceAngleController({}));      
       
-      var skybox = rootNode.attachNewSkybox({ "name":"skybox",
-                                              "scale": [1000,1000,1000],
-                                              "left": assets.loadTexture({"url":"assets/hot_nebula_90.jpg"}),
-                                              "right":  assets.loadTexture({"url":"assets/hot_nebula_270.jpg"}),
-                                              "front":  assets.loadTexture({"url":"assets/nebula.jpg"}),
-                                              "back":  assets.loadTexture({"url":"assets/nebula1.jpg"}),
-                                              "top":  assets.loadTexture({"url":"assets/hot_nebula_top.jpg"}),
-                                              "bottom":  assets.loadTexture({"url":"assets/hot_nebula_bottom.jpg"})
-      });
-     
-      var light = rootNode.attachNewDirectionalLight({"name": "secondLight",
-                                                      "color": vec3.create([1,1,1]),
-                                                      "direction": vec3.create([0.2,0.2,0.2])
-      });
+      var objects = rootNode.attachNewNode({"name":"objects"});
       
-      var solarsystem = rootNode.attachNewNode({"name":"solarsystem"});
+      for(var i = 0;i<100;i++){
+        objects.attachNewSphere({"name":"Sphere" + i,
+                                 "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
+                                 "scale":[Math.random(),Math.random(),Math.random()],
+                                 "material":EWGL.colorMaterial
+        }).setColor([Math.random(),Math.random(),Math.random()]);
+      };
       
-      var sun = solarsystem.attachNewSphere({"name":"sun"});
-      sun.setTexture(assets.loadTexture({"url":"http://ewgl.erbix.com/js/nodes2/textures/sun.jpg"}));
-      //sun.material = EWGL.colorMaterial;
-      
-      /*updated update */
-      var d = document.getElementById("console1");
+
       testApp.update = function(info){
-        d.innerHTML = "<p>fps: " + info.fps + "</p><p> rendered: " + info.counter + "<p>";
-       light.direction[1] = (Math.abs(info.counter % 400 - 200)-100)/100;
        rootNode.boundingBox;
       };
       testApp.startRendering();

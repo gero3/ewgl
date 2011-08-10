@@ -20,6 +20,8 @@
     this._worldScale = vec3.create([1,1,1]);
     this._matrix = mat4.create();
     
+    this._boundingBox = new EWGL.boundingBox();
+    
     
     this.parent = args.parent || undef;
     this.children = args.children || [];
@@ -98,6 +100,7 @@
       "set" : function(rot){
           this._rotation = rot;
           this.setUpdateMatrixFlag();
+          this.setUpdateBoundingBoxFlag();
       }
     },
     
@@ -113,6 +116,7 @@
       "set" : function(pos){
           this._translation = pos;
           this.setUpdateMatrixFlag();
+          this.setUpdateBoundingBoxFlag();
       }
     },
     
@@ -128,6 +132,7 @@
       "set" : function(scale){
           this._scale= scale;
           this.setUpdateMatrixFlag();
+          this.setUpdateBoundingBoxFlag();
       }
     },
     
@@ -226,6 +231,22 @@
         return this._worldRotation;
       }
     },
+    
+    "_boundingBox" : {
+      "value" : undef,
+      "configurable" : true,   
+      "writable": true
+    },
+    "boundingBox" : {
+      "get" : function(){
+        if (this.flags.UpdateBoundingBox){
+          calculateUpdateBoundingBox(this);
+        };
+        return this._boundingBox;
+      }
+    },
+    
+    
     "controllers" : {
       "value":[],
       "configurable" : true,   
@@ -248,11 +269,13 @@
 
     for(i = 0;i<l;i++){
       this.controllers[i].update(info);
-    };   
+    }  
     l = this.children.length;
     for(i = 0;i<l;i++){
       this.children[i].update(info);
-    }; 
+    }
+    
+    
 
   };
   
@@ -260,11 +283,15 @@
     var i,l = this.children.length;
     for(i = 0;i<l;i++){
       this.children[i].render(info);
-    };  
+    } 
   };
   
   node.prototype.setUpdateMatrixFlag = function(){
     setUpdateMatrixFlag(this);
+  };
+  
+  node.prototype.setUpdateBoundingBoxFlag = function(){
+    setUpdateBoundingBoxFlag(this);
   };
   
   node.prototype.removeAllChildren = function(){
@@ -295,7 +322,14 @@
   };
   
   
-  
+  var setUpdateBoundingBoxFlag = function(node1){
+    if (!node1.flags.UpdateBoundingBox){
+      node1.flags.UpdateBoundingBox = true;
+      if (node1.parent){
+        node1.parent.setUpdateBoundingBoxFlag();
+      }
+    }
+  };
   
   var setUpdateMatrixFlag = function(node1){
     var i,l,c;
@@ -305,8 +339,8 @@
       l = c.length;
       for(i = 0;i <l;i++){
         c[i].setUpdateMatrixFlag();
-      };
-    };
+      }
+    }
   };
   
   var removeAllChildren = function(node1){
@@ -315,8 +349,8 @@
       l = c.length;
       for(i = 0;i <l;i++){
         c[i]._parent = undef;
-      };
-    };
+      }
+    }
     node1._children = [];
   };
   
@@ -329,11 +363,11 @@
         l = 1;
       } else {
         children2 = children;
-      };
+      }
       for (i = 0;i<l;i++){
         children2[i].parent = node1;
-      };
-    };
+      }
+    }
   };
   
   var removeParent = function(node1){
@@ -341,7 +375,7 @@
     if (i !== -1) {
       node1.parent.children.splice(i,1);
       node1.parent = undef;
-    };
+    }
   };
   
   var setParent = function(node1,parent){
@@ -355,6 +389,52 @@
     };
   };
 
+  
+  var calculateUpdateBoundingBox = function(node1){
+    var children = node1.children,
+        l = children.length,i,
+        b = node1._boundingBox,bc;
+        
+    if (node1.flags.UpdateBoundingBox){
+      b.minX  = Number.POSITIVE_INFINITY; b.plusX = Number.NEGATIVE_INFINITY;
+      b.minY  = Number.POSITIVE_INFINITY; b.plusY = Number.NEGATIVE_INFINITY;
+      b.minZ  = Number.POSITIVE_INFINITY; b.plusZ = Number.NEGATIVE_INFINITY;
+      
+      for (i = 0; i<l; i++){
+        bc = children[i].boundingBox;
+        if (bc.minX  !== Number.POSITIVE_INFINITY || bc.plusX !== Number.NEGATIVE_INFINITY ||
+            bc.minY  !== Number.POSITIVE_INFINITY || bc.plusY !== Number.NEGATIVE_INFINITY ||
+            bc.minZ  !== Number.POSITIVE_INFINITY || bc.plusZ !== Number.NEGATIVE_INFINITY) {
+            
+            if (bc.minX < b.minX){
+              b.minX = bc.minX;
+            }
+            
+            if (bc.plusX > b.plusX){
+              b.plusX = bc.plusX;
+            }
+            
+            if (bc.minY < b.minY){
+              b.minY = bc.minY;
+            }
+            
+            if (bc.plusY > b.plusY){
+              b.plusY = bc.plusY;
+            }
+            
+            if (bc.minZ < b.minZ){
+              b.minZ = bc.minZ;
+            }
+            
+            if (bc.plusZ > b.plusZ){
+              b.plusZ = bc.plusZ;
+            }
+              
+        };
+      };
+    };
+    
+  };
   
   var calculateUpdateMatrix = function(node1){
     var parent = node1.parent;
@@ -377,6 +457,8 @@
       node1.flags.UpdateMatrix = false;
     };
   };
+  
+  
   
   node.$ = function(name){
     return node.Nodes[name];

@@ -6,7 +6,7 @@
     "extensions" : {},
     "specialCases" : [],
     "defaultLoader" : undef,
-    "onLoadedCompleted":function(){}
+    "onLoadedCompleted":function(){console.log("Everything is loaded");}
   };
   
   Object.defineProperties(loader,{

@@ -13,6 +13,11 @@
     var argsToSent = {"image":img};
     img.onload = createOnCompleteCallback(args.onComplete,argsToSent);
     img.onerror =  createOnErrorCallback(args.onError,argsToSent);
+    
+    if (args.url.indexOf("http") !== -1) {
+      img.crossOrigin = '';
+    }
+    
     img.src = args.url;
     return img;
   };

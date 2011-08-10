@@ -11,7 +11,9 @@
     if (materialList.materials.length === 0 ){
       materialList.baseMaterial = material;
     }
-    materialList.materials.push(material);
+    if (materialList.materials.indexOf(material)){
+      materialList.materials.push(material);
+    };
   };
   
   

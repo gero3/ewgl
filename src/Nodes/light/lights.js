@@ -16,8 +16,6 @@
     fsShaderExtension: new shaderExt({
       "type": shaderExt.types.fragment
     })
-
-
   };
 
   lights.addLight = function(light) {
@@ -72,8 +70,8 @@
         vs.addUniform("uDirectionalColor" + i, uniformTypes.vec3);
         vs.addUniform("uDirectionalDirection" + i, uniformTypes.vec3);
 
-        //vs.appendProgram("transformedNormal = uNMatrix * aVertexNormal;");
-        vs.appendProgram("transformedNormal = mat3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0) * aVertexNormal;");
+        vs.appendProgram("transformedNormal = uNMatrix * aVertexNormal;");
+        //vs.appendProgram("transformedNormal = mat3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0) * aVertexNormal;");
         vs.appendProgram("directionalWeighting = max(dot(normalize(transformedNormal), normalize(uDirectionalDirection" + i + ")), 0.0);");
         //vs.appendProgram("directionalWeighting = max(dot(transformedNormal, uDirectionalDirection" + i + "), 0.0);");
         vs.appendProgram("vLightWeighting += uDirectionalColor" + i + " * directionalWeighting;");

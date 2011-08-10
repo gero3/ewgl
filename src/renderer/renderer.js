@@ -78,6 +78,10 @@
       if (renderer.backcolor) {
         renderer.gl.clearColor(renderer.backcolor[0], renderer.backcolor[1], renderer.backcolor[2], renderer.backcolor[3]);
       }
+      renderer.gl.frontFace( renderer.gl.CCW );
+	    renderer.gl.cullFace( renderer.gl.BACK );
+	    renderer.gl.enable( renderer.gl.CULL_FACE );
+      
       renderer.gl.enable(renderer.gl.DEPTH_TEST);
       renderer.gl.clear(renderer.gl.COLOR_BUFFER_BIT | renderer.gl.DEPTH_BUFFER_BIT);
       };
@@ -117,8 +121,12 @@
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
       alert("Could not initialise shaders");
     }
-
     gl.useProgram(shaderProgram);
+    
+    shaderProgram.info = {};
+    shaderProgram.info.vertexshader = vertexshader;
+    shaderProgram.info.fragmentshader = fragmentshader;
+    
     return shaderProgram;
   };
 
@@ -141,7 +149,6 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
 
     vertexbuffer.glObject = glObject;
-    vertexbuffer.size = data.length;
     vertexbuffer.flags.dataChanged = false;
   };
 
@@ -153,7 +160,6 @@
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
 
     vertexbuffer.glObject = glObject;
-    vertexbuffer.size = data.length;
     vertexbuffer.flags.dataChanged = false;
 
   };

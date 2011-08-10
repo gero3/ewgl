@@ -11,7 +11,7 @@
     
     materialList.registerMaterial(this);
     
-    this.geometry = [];
+    this.geometries = [];
     this.zOrdered = false;
     this.shaderProgram = undef;
     this.lastUpdate = -1;
@@ -29,7 +29,11 @@
   
   var p = material.prototype;
   
+  p.undate = function(){};
+  
+  p.render = function(){};
 
 
+ global.material = material;
 
 }(EWGL));

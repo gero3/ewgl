@@ -8,10 +8,10 @@
   var Quad = function(args){
     geometry.call(this,args);
     this.mesh.addVertexbuffer(new vertexbuffer({"type" :"position",
-                                                "data" :[  1.0,  1.0,  0.0, 
-                                                          -1.0, -1.0,  0.0,                                                          
-                                                           1.0, -1.0,  0.0,
-                                                          -1.0,  1.0,  0.0]
+                                                "data" :[  0.5,  0.5,  0.0, 
+                                                          -0.5, -0.5,  0.0,                                                          
+                                                           0.5, -0.5,  0.0,
+                                                          -0.5,  0.5,  0.0]
                                                })
                              );
     this.mesh.addVertexbuffer(new vertexbuffer({"type" :"color",

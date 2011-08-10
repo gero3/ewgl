@@ -8,8 +8,8 @@
   var Sphere = function(args){
     geometry.call(this,args);
     
-    var latitudeBands = 30;
-    var longitudeBands = 30;
+    var latitudeBands = args.latitudeBands || 30;
+    var longitudeBands = args.longitudeBands || 30;
     var radius = 2;
     
     var vertexPositionData = [];
@@ -53,12 +53,14 @@
         var first = (latNumber * (longitudeBands + 1)) + longNumber;
         var second = first + longitudeBands + 1;
         indexData.push(first);
-        indexData.push(second);
         indexData.push(first + 1);
+        indexData.push(second);
+
         
         indexData.push(second);
-        indexData.push(second + 1);
         indexData.push(first + 1);
+        indexData.push(second + 1);
+
       }
     }
     

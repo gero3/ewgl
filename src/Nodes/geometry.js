@@ -6,7 +6,7 @@
     //important to keep the prototypal chain clean
     if (args === undef){
       args = {};
-    };
+    }
     node.call(this,args);
     
     this.mesh = args.mesh || new global.mesh();
@@ -54,15 +54,98 @@
           this.flags.changedMaterial = true;
         }
       }
+    },
+    "_boundingBox" : {
+      "value" : undef,
+      "configurable" : true,   
+      "writable": true
+    },
+    "boundingBox" : {
+      "get" : function(){
+        if (!this.flags.staticBoundingBox && this.flags.UpdateBoundingBox){
+          calculateUpdateBoundingBox(this);
+        }
+        return this._boundingBox;
+      }
     }
-  });
-  geometry.prototype.SetColor = function(color){
-    if (!this.mesh.vertexbuffers.position){
+  }); 
+  
+  var calculateUpdateBoundingBox = function(geom1){
+    var mesh = geom1.mesh,x,y,z;
+    
+    if (mesh.flags.boundingBoxChanged){
+      if (!mesh.boundingBox){
+        mesh.boundingBox = new global.boundingBox();
+      }
+      mesh.boundingBox.getBoundingFromPoints(mesh.vertexbuffers.position.getData());
+      mesh.flags.boundingBoxChanged = false;        
+    }
+    var matrix = geom1.matrix;
+    var mb = mesh.boundingBox;
+    var vecs = [];
+    
+    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.minZ]));
+    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.plusZ]));
+    
+    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.minZ]));
+    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.plusZ]));
+    
+    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.minZ]));
+    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.plusZ]));
+    
+    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.minZ]));
+    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.plusZ]));
+    
+    var b = geom1._boundingBox;
+    for (var i= 0,l= vecs.length;i<l;i++){
+      x = vecs[i][0];
+      y = vecs[i][1];
+      z = vecs[i][2];
+      
+      if (x < b.minX){
+        b.minX = x;
+      }
+      
+      if (x > b.plusX){
+        b.plusX = x;
+      }
+      
+      if (y < b.minY){
+        b.minY = y;
+      }
+      
+      if (y > b.plusY){
+        b.plusY = y;
+      }
+      
+      if (z < b.minZ){
+        b.minZ = z;
+      }
+      
+      if (z > b.plusZ){
+        b.plusZ = z;
+      }
+    }    
+  };
+  
+  
+  geometry.prototype.setColor = function(color){
+    var buffers = this.mesh.vertexbuffers;
+    if (!buffers.position){
       return;
     }
-    var data = this.mesh.vertexbuffers.position.getData();
-    
-    
+    var size = buffers.position.size/3;
+    var data = [];
+    while(size > 0){
+      
+      data.push(color[0]);
+      data.push(color[1]);
+      data.push(color[2]);
+      data.push(1);
+      
+      size--;
+    }
+    buffers.color.setData(data);    
   };
   
   geometry.prototype.setTexture = function(texture){
@@ -83,6 +166,8 @@
     args.parent = this;
     return new geometry(args);
   };
+  
+  global.mesh.flagsToSet.position = ["boundingBoxChanged"];
   
   global.geometry = geometry;
   

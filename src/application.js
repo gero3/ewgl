@@ -23,7 +23,7 @@
       
       this.mainLight = new global.ambientLight({
         "name": "mainLight",
-        "color": vec3.create([0.0, 0.0, 0.0]),
+        "color": vec3.create([0.5, 0.5, 0.5]),
         "parent": this.rootNode
       });
       
@@ -50,6 +50,8 @@
       }
     }
   });
+  
+  
 
   app.prototype.startRendering = function() {
     var applicationtest = this;

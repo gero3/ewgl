@@ -9,8 +9,8 @@ window.requestAnimationFrame = (function() {
   };
 })();
 
-console 
-
 var EWGL = {};
 
 EWGL.noop = function() {};
+
+EWGL.DEBUG = false;
