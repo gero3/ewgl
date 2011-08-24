@@ -1,3 +1,5 @@
+var EWGL = {};
+
 window.requestAnimationFrame = (function() {
   return  window.requestAnimationFrame || 
           window.webkitRequestAnimationFrame || 
@@ -9,8 +11,6 @@ window.requestAnimationFrame = (function() {
   };
 })();
 
-var EWGL = {};
-
 EWGL.noop = function() {};
 
-EWGL.DEBUG = false;
+EWGL.DEBUG = true;

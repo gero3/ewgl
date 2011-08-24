@@ -8,9 +8,10 @@
   var Sphere = function(args){
     geometry.call(this,args);
     
+    args = args ||{};
     var latitudeBands = args.latitudeBands || 30;
     var longitudeBands = args.longitudeBands || 30;
-    var radius = 2;
+    var radius = args.radius || 1;
     
     var vertexPositionData = [];
     var normalData = [];
@@ -65,26 +66,20 @@
     }
     
     
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" : "position",
-                                                "data" : vertexPositionData 
-                                               })
-                             );
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" : "normal",
-                                                "data" : normalData 
-                                               })
-                             );
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" : "color",
-                                                "data" : colors
-                                               })
-                             );
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" : "indices",
-                                                "data" : indexData
-                                               })
-                             ); 
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" : "texture",
-                                                "data" : textureCoordData 
-                                               })
-                             );                                                        
+    this.mesh.addNewVertexbuffer({"type" : "position",
+                                  "data" : vertexPositionData});
+                                  
+    this.mesh.addNewVertexbuffer({"type" : "normal",
+                                  "data" : normalData});
+                                  
+    this.mesh.addNewVertexbuffer({"type" : "color",
+                                  "data" : colors});
+                                  
+    this.mesh.addNewVertexbuffer({"type" : "indices",
+                                  "data" : indexData}); 
+                                  
+    this.mesh.addNewVertexbuffer({"type" : "texture",
+                                  "data" : textureCoordData});                                                        
     
   };
   

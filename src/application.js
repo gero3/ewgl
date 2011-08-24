@@ -1,6 +1,6 @@
 (function(global) {
   var info = {};
-  var app = function() {
+  var app = function(args) {
       var camera, renderer, rootNode;
       renderer = global.renderer;
       
@@ -36,7 +36,14 @@
         };
       }(this));
       
-      this.renderer.canvas = createcanvas();
+      if (args && args.canvas){
+        var canvas = document.getElementById(args.canvas.id);
+        canvas.width = args.canvas.width;
+        canvas.height = args.canvas.height;
+        this.renderer.canvas = canvas;
+      } else {
+        this.renderer.canvas = createcanvas();
+      };
       
   };
   

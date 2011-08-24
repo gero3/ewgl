@@ -1,27 +1,63 @@
 (function(global){
 
+  var undef;
+  
   var mesh = function(){
     this.flags = {};
     this.vertexbuffers = {};
   };
   
-  mesh.prototype.addVertexbuffer = function(buffer){
+  mesh.prototype.addNewVertexbuffer = function(args){
+    if (!args){
+      throw "Always create a vertexbuffer with at least some args";
+    }
+    args.mesh = this;
+    var buffer = new vertexbuffer(args);
     this.vertexbuffers[buffer.type] = buffer;
-    if (mesh.flagsToSet[buffer.type]){
-      buffer.listeners.push(this.vertexBufferChanged);
-      this.vertexBufferChanged(buffer.type);
-    }
-  };
-  mesh.prototype.vertexBufferChanged = function(type){
-    var flagsToset = mesh.flagsToSet[type];
-    if(flagsToset){
-      for(var i = 0,l =flagsToset.length;i<l;i++){
-        this.flags[flagsToset[i]] = true;
+    
+  };  
+  
+  var vertexbuffer = function(args){
+    var data;
+
+    this.flags = {};
+    this.type = args.type;
+    this._mesh = args.mesh;
+    this.glObject = undef;
+    this.size = 0;
+    this.listeners = [];
+    
+    
+    this.setData = function(dataObject){
+      data = dataObject;
+      this.size = data.length;
+      this.flags.dataChanged = true;
+      var flagsToset = mesh.flagsToSet[this.type];
+      if(flagsToset){
+        for(var i = 0,l =flagsToset.length;i<l;i++){
+          this._mesh.flags[flagsToset[i]] = true;
+        }
       }
-    }
+    };
+    
+    this.getData = function(){
+      return data;
+    };
+    
+    this.setData(args.data || []);
+    
   };
+  
+    
+  var vertexbufferType ={};
+  vertexbufferType.position = "position";
+  vertexbufferType.color    = "color";
+  vertexbufferType.texture  = "texture";
+  vertexbufferType.indices  = "indices";
+  
   
   mesh.flagsToSet = {};
   global.mesh = mesh;
+  global.vertexbufferType = vertexbufferType;
   
 }(EWGL));

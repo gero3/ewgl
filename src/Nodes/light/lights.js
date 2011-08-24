@@ -23,104 +23,133 @@
     lights.flags.changedLights = true;
   };
 
-  lights.calculateSimpleLightsId = function() {
+  var calculateSimpleLightsId = function() {
     var usedLights = lights.usedLights;
     var ambientlights = (usedLights[1] && 1) || 0;
     var directionalLights = (usedLights[2] && usedLights[2].length) || 0;
 
     return (directionalLights * 100 + ambientlights);
   };
-
-  lights.calculateSimpleLights = function() {
-    var usedLights = lights.usedLights,
-        vs = lights.vsShaderExtension,
-        fs = lights.fsShaderExtension,
-        uniformTypes = shaderExt.uniform.types,
-        varyingTypes = shaderExt.varying.types,
-        i, l;
-        
-    var ambientlights = (usedLights[1] && 1) || 0;
-    var directionalLights = (usedLights[2] && usedLights[2].length) || 0;
-    var nb = (directionalLights * 100 + ambientlights);
+  lights.vsShaderExtension.calculateID = calculateSimpleLightsId;
+  lights.fsShaderExtension.calculateID = calculateSimpleLightsId;
+  
+  
+  lights.vsShaderExtension.generateShaderPieces = function(id){
+    var vs = lights.vsShaderExtension;
+    var ambient = id%100;
+    var directional = ((id-ambient)/100)%100;
+    var uniformTypes = shaderExt.uniform.types;
+    var varyingTypes = shaderExt.varying.types;
     
-    if (vs.stack[nb] && fs.stack[nb]){
-      
-      vs.useId(nb);
-      fs.useId(nb);
-      return ;
+    if (vs.stack[id]){
+      vs.useId(id);
+      return;
     }
     
     vs.clear();
-    fs.clear();
-
-    if (usedLights[1] && usedLights[1].length > 0) {
+    
+    if (ambient > 0){
       vs.addUniform("uAmbientColor", uniformTypes.vec3);
       vs.addVarying("vLightWeighting", varyingTypes.vec3);
       vs.appendProgram("vLightWeighting = uAmbientColor;");
-
-      fs.addVarying("vLightWeighting", varyingTypes.vec3);
-      fs.appendProgram("gl_FragColor = vec4(gl_FragColor.rgb * vLightWeighting, gl_FragColor.a);");
-      
+    } else if(directional > 0){
+      vs.addVarying("vLightWeighting", varyingTypes.vec3);
+      vs.appendProgram("vLightWeighting = vec3(0.0,0.0,0.0);");
     }
-    if (usedLights[2] && usedLights[2].length > 0) {
+    
+    if (directional > 0) {
       vs.appendProgram("float directionalWeighting;");
       vs.appendProgram("vec3 transformedNormal;"); 
 
-      for (i = 0, l = usedLights[2].length; i < l; i++) {
+      for (var i = 0; i < directional; i++) {
         vs.addUniform("uDirectionalColor" + i, uniformTypes.vec3);
         vs.addUniform("uDirectionalDirection" + i, uniformTypes.vec3);
 
         vs.appendProgram("transformedNormal = uNMatrix * aVertexNormal;");
-        //vs.appendProgram("transformedNormal = mat3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0) * aVertexNormal;");
         vs.appendProgram("directionalWeighting = max(dot(normalize(transformedNormal), normalize(uDirectionalDirection" + i + ")), 0.0);");
-        //vs.appendProgram("directionalWeighting = max(dot(transformedNormal, uDirectionalDirection" + i + "), 0.0);");
         vs.appendProgram("vLightWeighting += uDirectionalColor" + i + " * directionalWeighting;");
 
       }
-
-      nb += usedLights[2].length * 100;
-
+      
     }
-    vs.idNumber = nb;
-    fs.idNumber = nb;
+    vs.idNumber = id;
+    
   };
   
-  lights.setSimpleLightsUniforms = function(renderer,shaderProgram){
+  lights.fsShaderExtension.generateShaderPieces = function(id){
+    var fs = lights.fsShaderExtension;
+    var ambient = id%100;
+    var directional = ((id-ambient)/100)%100;
+    var varyingTypes = shaderExt.varying.types;
     
-    shaderProgram.lights = shaderProgram.lights || {};
+    if (fs.stack[id]){
+      fs.useId(id);
+      return;
+    }
     
-    var uniforms = shaderProgram.lights;
-    var usedLights = lights.usedLights;
-    var ambientlights = usedLights[lights.types.ambientLight];
-    var directionalLight = usedLights[lights.types.directionalLight];
+    fs.clear();
+    
+    if (ambient > 0 || directional > 0){
+      fs.addVarying("vLightWeighting", varyingTypes.vec3);
+      fs.appendProgram("gl_FragColor = vec4(gl_FragColor.rgb * vLightWeighting, gl_FragColor.a);");
+    }
+    
+    fs.idNumber = id;
+  };
+
+  var getShaderInputs = function(shaderProgram,id){
+    var uniforms = shaderProgram.uniforms;
+    var ambient = id%100;
+    var directional = ((id-ambient)/100)%100;
+    var renderer = shaderProgram.renderer;
+    var i,l;
+    
+    if (ambient > 0) {
+     uniforms.AmbientUniform = renderer.getUniform(shaderProgram.program, "uAmbientColor");
+    }
+    if (directional > 0) {
+      for (i = 0, l = directional; i < l; i++) {
+        var color = "directionalLightColor" + i;
+        var direction = "directionalLightDirection" + i;
+        
+        uniforms[color] = renderer.getUniform(shaderProgram.program, "uDirectionalColor" + i);
+        uniforms[direction] = renderer.getUniform(shaderProgram.program, "uDirectionalDirection" + i);
+      }
+    }
+  }
+  
+  lights.vsShaderExtension.getShaderInputs = getShaderInputs;
+  
+  var setSimpleLightsUniforms = function(shaderProgram,id){
+    
+    var uniforms = shaderProgram.uniforms;
+    var ambient = id%100;
+    var directional = ((id-ambient)/100)%100;
+    var renderer = shaderProgram.renderer;
     var gl = renderer.gl;
     var i,l;
     
     
-    if (ambientlights && ambientlights.length > 0) {
-      uniforms.AmbientUniform = uniforms.AmbientUniform || renderer.getUniform(shaderProgram, "uAmbientColor");
+    if (ambient > 0) {
       var test = vec3.create();
-      for (i = 0, l = ambientlights.length; i < l; i++) {
-        vec3.add(test, ambientlights[i].color);
+      for (i = 0, l = lights.usedLights[1].length; i < l; i++) {
+        vec3.add(test, lights.usedLights[1][i].color);
       }
       gl.uniform3fv(uniforms.AmbientUniform, test);
     }
-    if (directionalLight && directionalLight.length > 0) {
-      for (i = 0, l = directionalLight.length; i < l; i++) {
+    if (directional > 0) {
+      for (i = 0, l = directional; i < l; i++) {
         var color = "directionalLightColor" + i;
         var direction = "directionalLightDirection" + i;
         
-        uniforms[color] = uniforms[color] || renderer.getUniform(shaderProgram, "uDirectionalColor" + i);
-        uniforms[direction] = uniforms[direction] || renderer.getUniform(shaderProgram, "uDirectionalDirection" + i);
-        
-        gl.uniform3fv(uniforms[color], directionalLight[i].color);
-        gl.uniform3fv(uniforms[direction], directionalLight[i].direction);
+        gl.uniform3fv(uniforms[color], lights.usedLights[2][i].color);
+        gl.uniform3fv(uniforms[direction], lights.usedLights[2][i].direction);
         
       }
     }
-    
   };
-
+  
+  lights.vsShaderExtension.setShaderPieces = setSimpleLightsUniforms;
 
   global.lights = lights;
 

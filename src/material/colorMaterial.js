@@ -6,6 +6,10 @@
   var materialList = global.materialList;
   var lights = global.lights;
   var shaderExt = global.shaderExtension;
+  
+  var testMatrix4 = mat4.create();
+  var testMatrix3 = mat3.create();
+  
 
   var colorMaterial = new global.material();
   
@@ -39,8 +43,8 @@
         //setmatrix
         gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, geom.matrix);
         
-        var test = mat4.multiply( colorMaterial.renderer.camera.inverseMatrix,geom.matrix,mat4.create());
-        var test2 = mat4.toMat3(test,mat3.create());
+        var test = mat4.multiply( colorMaterial.renderer.camera.matrix,geom.matrix,testMatrix4);
+        var test2 = mat4.toMat3(mat4.inverse(test),testMatrix3);
         test2 = mat3.transpose(test2);
         
         gl.uniformMatrix3fv(shaderProgram.NMatrixUniform, false, test2);   

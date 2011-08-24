@@ -34,7 +34,7 @@
     this.minZ  = Number.POSITIVE_INFINITY;
     this.plusZ = Number.NEGATIVE_INFINITY;
     
-    var size = points.length /3;
+    var size = points.length;
     var x,y,z;
     
     for(var i = 0;i<size;i+=3){

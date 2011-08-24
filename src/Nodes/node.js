@@ -130,6 +130,9 @@
         return this._scale;
       },
       "set" : function(scale){
+          if (!scale.length){
+            scale = [scale,scale,scale];
+          }
           this._scale= scale;
           this.setUpdateMatrixFlag();
           this.setUpdateBoundingBoxFlag();
@@ -274,9 +277,6 @@
     for(i = 0;i<l;i++){
       this.children[i].update(info);
     }
-    
-    
-
   };
   
   node.prototype.render = function(info){
@@ -455,6 +455,18 @@
       mat4.multiply(node1._matrix,quat4.toMat4(node1._worldRotation));
       mat4.setTranslation(node1._matrix,node1._worldTranslation);
       node1.flags.UpdateMatrix = false;
+    };
+  };
+  nexboundingboxCounter = 0;
+  node.prototype.showBounds = function(){
+    if (EWGL.DEBUG){
+      if (!this.flags.hasBoundingBoxOutline){
+        for(var i = 0;i<this.children.length;i++){
+          this.children[i].showBounds();
+        };
+        this.flags.hasBoundingBoxOutline = true;
+        this.attachNewBoundingBoxOutline();
+      }
     };
   };
   

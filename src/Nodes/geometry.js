@@ -80,52 +80,64 @@
       mesh.boundingBox.getBoundingFromPoints(mesh.vertexbuffers.position.getData());
       mesh.flags.boundingBoxChanged = false;        
     }
-    var matrix = geom1.matrix;
-    var mb = mesh.boundingBox;
-    var vecs = [];
-    
-    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.minZ]));
-    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.plusZ]));
-    
-    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.minZ]));
-    vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.plusZ]));
-    
-    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.minZ]));
-    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.plusZ]));
-    
-    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.minZ]));
-    vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.plusZ]));
-    
-    var b = geom1._boundingBox;
-    for (var i= 0,l= vecs.length;i<l;i++){
-      x = vecs[i][0];
-      y = vecs[i][1];
-      z = vecs[i][2];
+    if (! geom1.flags.NoBoundingBox){
+      var matrix = geom1.matrix;
+      var mb = mesh.boundingBox;
+      var vecs = [];
       
-      if (x < b.minX){
-        b.minX = x;
-      }
+      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.minZ],[]));
+      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.plusZ],[]));
       
-      if (x > b.plusX){
-        b.plusX = x;
-      }
+      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.minZ],[]));
+      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.plusZ],[]));
       
-      if (y < b.minY){
-        b.minY = y;
-      }
+      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.minZ],[]));
+      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.plusZ],[]));
       
-      if (y > b.plusY){
-        b.plusY = y;
-      }
+      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.minZ],[]));
+      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.plusZ],[]));
       
-      if (z < b.minZ){
-        b.minZ = z;
-      }
+      var b = geom1._boundingBox;
       
-      if (z > b.plusZ){
-        b.plusZ = z;
-      }
-    }    
+      b.minX  = Number.POSITIVE_INFINITY;
+      b.plusX = Number.NEGATIVE_INFINITY;
+      
+      b.minY  = Number.POSITIVE_INFINITY;
+      b.plusY = Number.NEGATIVE_INFINITY;
+      
+      b.minZ  = Number.POSITIVE_INFINITY;
+      b.plusZ = Number.NEGATIVE_INFINITY;
+      
+      for (var i= 0,l= vecs.length;i<l;i++){
+        x = vecs[i][0];
+        y = vecs[i][1];
+        z = vecs[i][2];
+        
+        if (x < b.minX){
+          b.minX = x;
+        }
+        
+        if (x > b.plusX){
+          b.plusX = x;
+        }
+        
+        if (y < b.minY){
+          b.minY = y;
+        }
+        
+        if (y > b.plusY){
+          b.plusY = y;
+        }
+        
+        if (z < b.minZ){
+          b.minZ = z;
+        }
+        
+        if (z > b.plusZ){
+          b.plusZ = z;
+        }
+      }   
+    };
   };
   
   

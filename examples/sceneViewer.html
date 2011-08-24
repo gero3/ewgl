@@ -56,12 +56,32 @@
     <script src="../src/stats.js"></script> 
     <script src="../src/application.js"></script> 
     <style type="text/css"> 
-    canvas {
+    #3Dviewer {
       display: block;
       position: absolute;
       left :0px;
       top: 0px;
+      right:0px;
+      bottom: 0px;
       z-index:100;
+    }
+    #container{
+      display: block;
+      position: absolute;
+      left :0px;
+      top: 0px;
+      right:250px;
+      bottom: 0px;
+    }
+    #tree{
+      display: block;
+      position: absolute;
+      width:250px;
+      right:0px;
+      top: 0px;
+      bottom: 0px;
+      z-index:100;
+      overflow: scroll;
     }
     #ambientLightSlider {
       z-index:200;
@@ -89,38 +109,24 @@
     
   </head>   
   <body> 
-  
-    <input id="ambientLightSlider" type="range" name="ambientLight" min="0" max="1" step="0.001" value="1" />
-    <div id="console1"><div>Console: </div></div> 
+    <div id="container"><canvas id="3Dviewer">This is a test</canvas></div>
+    <div id="tree"></div>
     <script> 
-      (function(){
-          var element = document.getElementById("ambientLightSlider"); 
-          element.addEventListener("change",function(){
-              testApp.mainLight.color = vec3.create([element.value,element.value,element.value]);
-              
-          });
-      }());
-        
-    </script>
-    
-    
-    <script> 
-    
-    
-    
-      var testApp = new EWGL.app();
+      var testApp = new EWGL.app({"canvas":{
+                                    "id": "3Dviewer",
+                                    "width": document.getElementById("container").offsetWidth,
+                                    "height": document.getElementById("container").offsetHeight
+                                  }
+                                });
+                                
       var rootNode = testApp.rootNode;
       var camera = testApp.camera;
-//      var input = testApp.input;
-      var assets = testApp.assetManager;
-      
+                                
       camera.translation = [0.0, 10.0, 35.0];
       camera.addController(new EWGL.distanceAngleController({}));      
       
       var objects = rootNode.attachNewNode({"name":"objects"}); 
       
-      
-      //testApp.mainLight.removeParent();
       rootNode.attachNewDirectionalLight({"name":"Light1","color":[1,0,0],"direction":[0.0, 10.0, 35.0]}); 
       
       var sphere = rootNode.attachNewSphere({"name":"test",
@@ -130,7 +136,7 @@
                                           });
       sphere.setColor([0.7,0.7,0.7]);
       
-      for(var i = 0;i<500;i++){
+      for(var i = 0;i<5;i++){
         sphere = objects.attachNewSphere({"name":"Sphere" + i,
                                               "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
                                               "scale":Math.random(),
@@ -140,19 +146,28 @@
         });
         sphere.setColor([Math.random(),Math.random(),Math.random()]);
         //sphere.addController(new EWGL.positionController({"rpm":20,"axis":[1,1,1]}));
-      };
-      
-      rootNode.showBounds();
-      testApp.update = function(info){
-        //rootNode.showBounds();
-        document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";
-      };
-      
-      objects.addController(new EWGL.positionController({"rpm":20,"axis":[1,1,1]}));
-                                                            
-      //testApp.renderOnce();
+      };                           
+                              
+      objects.addController(new EWGL.positionController({"rpm":15,"axis":[1,1,1]}));
+
+                                
+      var createTree = function(node){
+        var result = "";
+        result += "<ul>";
+        
+        for(var i = 0;i<node.children.length;i++){
+          result += "<li>";
+          result += node.children[i].name;
+          result += createTree(node.children[i]);
+          result += "</li>";
+        };
+        
+        result += "</ul>";
+        return result;
+      }
+                                
+      document.getElementById("tree").innerHTML = createTree(testApp.rootNode);
       testApp.startRendering();
-      
     </script> 
   </body> 
   </html>

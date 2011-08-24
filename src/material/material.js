@@ -7,13 +7,17 @@
   var lights = global.lights;
   
   
-  var material = function(){
+  var material = function(args){
+    
+    if (!args) {
+      args = {};
+    }
     
     materialList.registerMaterial(this);
     
     this.geometries = [];
     this.zOrdered = false;
-    this.shaderProgram = undef;
+    this.shaderProgram = args.shaderProgram || undef;
     this.lastUpdate = -1;
     
     Object.defineProperties(this,{

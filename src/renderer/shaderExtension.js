@@ -1,6 +1,10 @@
 (function(global){
     
+  var counter = 0;
   var shaderExtension = function(args){
+    //Nessecary to id shader extension
+    this.shaderExtensionCounter = counter++;
+    
     this.type = args.type;
     
     this.preprocessor = args.preprocessor || "";
@@ -58,6 +62,18 @@
       }
     });  
   };
+  // mustoverride
+  shaderExtension.prototype.calculateID = function(){
+    return -1;
+  };
+  
+  //override
+  shaderExtension.prototype.generateShaderPieces = function(id){};
+  
+  //override
+  shaderExtension.prototype.getShaderInputs = function(program,id){};
+  
+  shaderExtension.prototype.setShaderPieces = function(shaderProgram,id){};
   
   shaderExtension.prototype.clear = function(){
     this.preprocessor = "";

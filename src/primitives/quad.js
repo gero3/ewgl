@@ -7,32 +7,28 @@
   
   var Quad = function(args){
     geometry.call(this,args);
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" :"position",
-                                                "data" :[  0.5,  0.5,  0.0, 
-                                                          -0.5, -0.5,  0.0,                                                          
-                                                           0.5, -0.5,  0.0,
-                                                          -0.5,  0.5,  0.0]
-                                               })
-                             );
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" :"color",
-                                                "data" :[ 1.0,  1.0,  1.0,  1.0, 
-                                                          1.0,  1.0,  1.0,  1.0, 
-                                                          1.0,  1.0,  1.0,  1.0,
-                                                          1.0,  1.0,  1.0,  1.0]
-                                               })
-                             );
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" : "indices",
-                                                "data" : [ 0,  1,  2,
-                                                           0,  1,  3]
-                                               })
-                             ); 
-    this.mesh.addVertexbuffer(new vertexbuffer({"type" : "texture",
-                                                "data" : [ 0,  0,
-                                                           1,  1,
-                                                           0,  1,
-                                                           1,  0]
-                                               })
-                             );                                                        
+    this.mesh.addNewVertexbuffer({"type" :"position",
+                                  "data" :[ 0.5,  0.5,  0.0, 
+                                           -0.5, -0.5,  0.0,                                                          
+                                            0.5, -0.5,  0.0,
+                                           -0.5,  0.5,  0.0]
+                                });
+    this.mesh.addNewVertexbuffer({"type" :"color",
+                                  "data" :[ 1.0,  1.0,  1.0,  1.0, 
+                                            1.0,  1.0,  1.0,  1.0, 
+                                            1.0,  1.0,  1.0,  1.0,
+                                            1.0,  1.0,  1.0,  1.0]
+                                });
+    this.mesh.addNewVertexbuffer({"type" : "indices",
+                                  "data" : [ 0,  2,  1,
+                                             0,  1,  3]
+                                }); 
+    this.mesh.addNewVertexbuffer({"type" : "texture",
+                                  "data" : [ 0,  0,
+                                             1,  1,
+                                             0,  1,
+                                             1,  0]
+                                });                                                        
                                                            
   };
   

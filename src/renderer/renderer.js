@@ -173,7 +173,7 @@
     };
   };
 
-  renderer.combineShaderExtensions = function(shaderExts){
+/*  renderer.combineShaderExtensions = function(shaderExts){
     var preprocessor = "",
         uniforms ="",
         attributes = "",
@@ -198,7 +198,7 @@
             varyings + "\n" +
             "void main() {\n" +
             program +
-            "}");
+            "}")
     return  preprocessor + "\n" +
             attributes + "\n" +
             uniforms + "\n" +
@@ -207,7 +207,7 @@
             program +
             "}";
         
-  };
+  };*/
   global.renderer = renderer;
 
 
