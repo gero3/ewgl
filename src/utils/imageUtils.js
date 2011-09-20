@@ -6,7 +6,7 @@
   var ctx = canvas.getContext("2d");
   
   global.utils.getImageData = function(img){
-    var img = args.image;
+    //var img = args.image;
     canvas.width = img.width;
     canvas.height = img.height;
     ctx.drawImage(img, 0, 0);

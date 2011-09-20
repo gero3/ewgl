@@ -40,11 +40,13 @@
         
         gl.uniformMatrix3fv(shaderProgram.uniforms.NMatrixUniform, false, test2);   
         
-        //draw
+        //ready the 
         if (mesh.vertexbuffers.position.flags.dataChanged){
           renderer.AdjustGLBuffer(mesh.vertexbuffers.position);
         }
-        
+        if (! mesh.vertexbuffers.normal){
+         this.calculateNormals(geom);
+        }
         if (mesh.vertexbuffers.normal.flags.dataChanged){
           renderer.AdjustGLBuffer(mesh.vertexbuffers.normal);
         }

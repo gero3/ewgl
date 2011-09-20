@@ -8,6 +8,7 @@
     
     <script src="../src/core.js"></script>
     <script src="../src/math/glmatrix.js"></script> 
+    <script src="../src/math/glmatrixUtils/vec3.js"></script>
     <script src="../src/math/boundingBox.js"></script> 
     
     <script src="../src/input/inputmanager.js"></script> 
@@ -18,6 +19,7 @@
     <script src="../src/renderer/mesh.js"></script> 
     <script src="../src/renderer/vertexbuffer.js"></script> 
     <script src="../src/renderer/texture.js"></script> 
+    <script src="../src/renderer/shaderProgram.js"></script>
     <script src="../src/renderer/shaderExtension.js"></script>
     
     <script src="../src/Nodes/node.js"></script> 
@@ -30,19 +32,21 @@
     <script src="../src/Nodes/light/ambientLight.js"></script>
     <script src="../src/Nodes/light/directionalLight.js"></script>
     
+    <script src="../src/material/shaderExtensions/baseShader.js"></script>
+    <script src="../src/material/shaderExtensions/colorShader.js"></script>
+    
     <script src="../src/material/materialList.js"></script>
     <script src="../src/material/material.js"></script> 
     <script src="../src/material/baseMaterial.js"></script> 
     <script src="../src/material/colorMaterial.js"></script> 
     <script src="../src/material/linesMaterial.js"></script> 
     <script src="../src/material/skyboxMaterial.js"></script>
-    <script src="../src/material/debugBoundingBoxesMaterial.js"></script>
     
     <script src="../src/primitives/triangle.js"></script> 
     <script src="../src/primitives/quad.js"></script> 
+    <script src="../src/primitives/cube.js"></script> 
     <script src="../src/primitives/sphere.js"></script> 
-    <script src="../src/primitives/skybox.js"></script>
-    <script src="../src/primitives/boundingBoxOutline.js"></script> 
+    <script src="../src/primitives/skybox.js"></script> 
  
     <script src="../src/loaders/loader.js"></script> 
     <script src="../src/loaders/imageLoader.js"></script>
@@ -54,7 +58,7 @@
     <script src="../src/controller/distanceAngleController.js"></script> 
         
     <script src="../src/stats.js"></script> 
-    <script src="../src/application.js"></script> 
+    <script src="../src/application.js"></script>
     <style type="text/css"> 
     #3Dviewer {
       display: block;

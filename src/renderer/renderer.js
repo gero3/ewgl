@@ -173,41 +173,6 @@
     };
   };
 
-/*  renderer.combineShaderExtensions = function(shaderExts){
-    var preprocessor = "",
-        uniforms ="",
-        attributes = "",
-        varyings = "",
-        program = "";
-    var i,l,shaderExt;
-    
-    for(i = 0,l=shaderExts.length;i<l;i++){
-      shaderExt = shaderExts[i];
-      
-      preprocessor += shaderExt.preprocessor;
-      
-      attributes += shaderExt.attributes;
-      uniforms += shaderExt.uniforms;
-      varyings += shaderExt.varyings;
-      
-      program += shaderExt.program;
-    };
-    console.log( preprocessor + "\n" +
-            attributes + "\n" +
-            uniforms + "\n" +
-            varyings + "\n" +
-            "void main() {\n" +
-            program +
-            "}")
-    return  preprocessor + "\n" +
-            attributes + "\n" +
-            uniforms + "\n" +
-            varyings + "\n" +
-            "void main() {\n" +
-            program +
-            "}";
-        
-  };*/
   global.renderer = renderer;
 
 

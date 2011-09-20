@@ -43,7 +43,7 @@
         this.renderer.canvas = canvas;
       } else {
         this.renderer.canvas = createcanvas();
-      };
+      }
       
   };
   

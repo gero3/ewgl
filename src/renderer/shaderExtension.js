@@ -75,6 +75,11 @@
   
   shaderExtension.prototype.setShaderPieces = function(shaderProgram,id){};
   
+  shaderExtension.prototype.setFrameInputs = function(shaderProgram,id){};
+  
+  shaderExtension.prototype.setObjectInputs = function(shaderProgram,id){};
+  
+  
   shaderExtension.prototype.clear = function(){
     this.preprocessor = "";
     

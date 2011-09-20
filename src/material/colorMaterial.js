@@ -5,35 +5,28 @@
   
   var materialList = global.materialList;
   var lights = global.lights;
-  var shaderExt = global.shaderExtension;
-  
+
   var testMatrix4 = mat4.create();
   var testMatrix3 = mat3.create();
   
 
-  var colorMaterial = new global.material();
+  var colorMaterial = new global.material({"shaderProgram":global.shaders.colorShader});
   
   colorMaterial.render = function(info){
     
     var i,renderer = colorMaterial.renderer,
         l = colorMaterial.geometries.length,
         gl = renderer.gl,
-        shaderProgram,
+        shaderProgram = this.shaderProgram,
         geom,mesh;
     
-    //setshader
-    if (!checkShaderValidation()){
-      lights.calculateSimpleLights();
-      createShaderProgram();
-    }
-    shaderProgram =  colorMaterial.shaderProgram;
-    renderer.useProgram(shaderProgram);
+    shaderProgram.use();
     
     //setcameraMatrix
-    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, colorMaterial.renderer.camera.perspective);
-    gl.uniformMatrix4fv(shaderProgram.cMatrixUniform, false, colorMaterial.renderer.camera.inverseMatrix);
+    gl.uniformMatrix4fv(shaderProgram.uniforms.pMatrixUniform, false, colorMaterial.renderer.camera.perspective);
+    gl.uniformMatrix4fv(shaderProgram.uniforms.cMatrixUniform, false, colorMaterial.renderer.camera.inverseMatrix);
     
-    lights.setSimpleLightsUniforms(renderer,shaderProgram);
+    lights.vsShaderExtension.setShaderPieces(shaderProgram,lights.vsShaderExtension.calculateID());
     
     //render Geometries
     for(i=0;i<l;i++){
@@ -41,17 +34,21 @@
       if(geom.lastUpdate === info.counter){
         mesh = geom.mesh;
         //setmatrix
-        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, geom.matrix);
+        gl.uniformMatrix4fv(shaderProgram.uniforms.mvMatrixUniform, false, geom.matrix);
         
         var test = mat4.multiply( colorMaterial.renderer.camera.matrix,geom.matrix,testMatrix4);
         var test2 = mat4.toMat3(mat4.inverse(test),testMatrix3);
         test2 = mat3.transpose(test2);
         
-        gl.uniformMatrix3fv(shaderProgram.NMatrixUniform, false, test2);   
+        gl.uniformMatrix3fv(shaderProgram.uniforms.NMatrixUniform, false, test2);   
         
         //draw
         if (mesh.vertexbuffers.position.flags.dataChanged){
           renderer.AdjustGLBuffer(mesh.vertexbuffers.position);
+        }
+        
+        if (! mesh.vertexbuffers.normal){
+         this.calculateNormals(geom);
         }
         
         if (mesh.vertexbuffers.normal.flags.dataChanged){
@@ -72,13 +69,13 @@
         
         
         gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.position.glObject);
-        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.attributes.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.normal.glObject);
-        gl.vertexAttribPointer(shaderProgram.VertexNormalAttribute, 3, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.attributes.VertexNormalAttribute, 3, gl.FLOAT, false, 0, 0);
         
         gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.color.glObject);
-        gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.attributes.vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
         
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.vertexbuffers.indices.glObject);
         gl.drawElements(gl.TRIANGLES, mesh.vertexbuffers.indices.size, gl.UNSIGNED_SHORT, 0);
@@ -86,74 +83,6 @@
       }
     }
   };
-  
-  var prevcache = {}; 
-  var checkShaderValidation = function(){
-    
-    if (!colorMaterial.shaderProgram){
-      return false;
-    }
-    
-    var id = lights.calculateSimpleLightsId();
-    if ( id != prevcache.lights){
-      prevcache.lights = id;
-      return false;
-    }
-    prevcache.lights = id;
-    
-    return true;
-  };
-  
-  var vertexshader = new shaderExt({"type": shaderExt.types.vertex});
-  
-  vertexshader.addAttribute("aVertexPosition","vec3");
-  vertexshader.addAttribute("aVertexNormal","vec3");
-  vertexshader.addAttribute("aVertexColor","vec4");
-  
-  vertexshader.addUniform("uMVMatrix","mat4");
-  vertexshader.addUniform("uPMatrix","mat4");
-  vertexshader.addUniform("uCMatrix","mat4");
-  vertexshader.addUniform("uNMatrix","mat3");  
-
-  vertexshader.addVarying("vColor","vec4");
-  
-  vertexshader.appendProgram("gl_Position = uPMatrix * (uCMatrix * uMVMatrix) * vec4(aVertexPosition, 1.0);");
-  vertexshader.appendProgram("vColor = aVertexColor;");
-  
-      
-  var fragmentshader = new shaderExt({"type": shaderExt.types.fragment});
-  
-  fragmentshader.addPreprocessor("#ifdef GL_ES\n  precision highp float; \n#endif \n");
-  
-  fragmentshader.addVarying("vColor","vec4");
-  
-  fragmentshader.appendProgram("gl_FragColor = vColor;");
-
-
-  var createShaderProgram = function(){
-    var start = +(new Date());
-    var r = colorMaterial.renderer;
-    
-    var shaderProgram = r.createShaderProgram(
-        r.combineShaderExtensions([vertexshader, lights.vsShaderExtension]),
-        r.combineShaderExtensions([fragmentshader, lights.fsShaderExtension])
-    );
-    
-    shaderProgram.vertexPositionAttribute =r.getAttribute(shaderProgram,"aVertexPosition");
-    shaderProgram.vertexColorAttribute =r.getAttribute(shaderProgram,"aVertexColor");
-    shaderProgram.VertexNormalAttribute =r.getAttribute(shaderProgram,"aVertexNormal");
-    
-    shaderProgram.pMatrixUniform = r.getUniform(shaderProgram, "uPMatrix");
-    shaderProgram.cMatrixUniform = r.getUniform(shaderProgram, "uCMatrix");
-    shaderProgram.mvMatrixUniform = r.getUniform(shaderProgram, "uMVMatrix");
-    shaderProgram.NMatrixUniform = r.getUniform(shaderProgram, "uNMatrix");
-    
-    
-    colorMaterial.shaderProgram = shaderProgram;
-    //console.log( +(new Date()) - start);
-  };
-  
-  
   
   materialList.registerMaterial(colorMaterial);
   

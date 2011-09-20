@@ -13,7 +13,7 @@
     }
     args.mesh = this;
     var buffer = new vertexbuffer(args);
-    this.vertexbuffers[buffer.type] = buffer;
+    this.vertexbuffers[args.type] = buffer;
     
   };  
   

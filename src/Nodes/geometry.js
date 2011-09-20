@@ -2,6 +2,11 @@
   var undef;
   var node = global.node;
   
+  var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
+  var NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY;
+  
+  var vecs = vec3.createFixedPool(8);
+  
   var geometry = function geometry(args){
     //important to keep the prototypal chain clean
     if (args === undef){
@@ -83,61 +88,55 @@
     if (! geom1.flags.NoBoundingBox){
       var matrix = geom1.matrix;
       var mb = mesh.boundingBox;
-      var vecs = [];
       
-      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.minZ],[]));
-      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.plusZ],[]));
+      mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.minZ],vecs[0]);
+      mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.plusZ],vecs[1]);
       
-      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.minZ],[]));
-      vecs.push(mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.plusZ],[]));
+      mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.minZ],vecs[2]);
+      mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.plusZ],vecs[3]);
       
-      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.minZ],[]));
-      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.plusZ],[]));
+      mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.minZ],vecs[4]);
+      mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.plusZ],vecs[5]);
       
-      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.minZ],[]));
-      vecs.push(mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.plusZ],[]));
+      mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.minZ],vecs[6]);
+      mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.plusZ],vecs[7]);
       
       var b = geom1._boundingBox;
       
-      b.minX  = Number.POSITIVE_INFINITY;
-      b.plusX = Number.NEGATIVE_INFINITY;
+      b.minX  = POSITIVE_INFINITY;
+      b.plusX = NEGATIVE_INFINITY;
       
-      b.minY  = Number.POSITIVE_INFINITY;
-      b.plusY = Number.NEGATIVE_INFINITY;
+      b.minY  = POSITIVE_INFINITY;
+      b.plusY = NEGATIVE_INFINITY;
       
-      b.minZ  = Number.POSITIVE_INFINITY;
-      b.plusZ = Number.NEGATIVE_INFINITY;
+      b.minZ  = POSITIVE_INFINITY;
+      b.plusZ = NEGATIVE_INFINITY;
       
       for (var i= 0,l= vecs.length;i<l;i++){
-        x = vecs[i][0];
-        y = vecs[i][1];
-        z = vecs[i][2];
+        var vec =  vecs[i];
+        x = vec[0];
+        y = vec[1];
+        z = vec[2];
         
         if (x < b.minX){
           b.minX = x;
-        }
-        
-        if (x > b.plusX){
+        } else if (x > b.plusX){
           b.plusX = x;
         }
         
         if (y < b.minY){
           b.minY = y;
-        }
-        
-        if (y > b.plusY){
+        } else if (y > b.plusY){
           b.plusY = y;
         }
         
         if (z < b.minZ){
           b.minZ = z;
-        }
-        
-        if (z > b.plusZ){
+        } else if (z > b.plusZ){
           b.plusZ = z;
         }
       }   
-    };
+    }
   };
   
   

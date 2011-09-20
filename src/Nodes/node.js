@@ -457,6 +457,7 @@
       node1.flags.UpdateMatrix = false;
     };
   };
+  
   nexboundingboxCounter = 0;
   node.prototype.showBounds = function(){
     if (EWGL.DEBUG){

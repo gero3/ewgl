@@ -68,10 +68,10 @@
     
     this.mesh.addNewVertexbuffer({"type" : "position",
                                   "data" : vertexPositionData});
-                                  
+    /*                              
     this.mesh.addNewVertexbuffer({"type" : "normal",
                                   "data" : normalData});
-                                  
+     */                             
     this.mesh.addNewVertexbuffer({"type" : "color",
                                   "data" : colors});
                                   
