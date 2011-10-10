@@ -9,6 +9,7 @@
     <script src="../src/core.js"></script>
     <script src="../src/math/glmatrix.js"></script> 
     <script src="../src/math/glmatrixUtils/vec3.js"></script>
+    <script src="../src/math/glmatrixUtils/mat4.js"></script>
     <script src="../src/math/boundingBox.js"></script> 
     
     <script src="../src/input/inputmanager.js"></script> 
@@ -139,7 +140,7 @@
                                           });
       sphere.setColor([0.7,0.7,0.7]);
       
-      for(var i = 0;i<500;i++){
+      for(var i = 0;i<1000;i++){
         sphere = objects.attachNewSphere({"name":"Sphere" + i,
                                               "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
                                               "scale":Math.random(),
@@ -151,7 +152,7 @@
         //sphere.addController(new EWGL.positionController({"rpm":20,"axis":[1,1,1]}));
       };
       
-      rootNode.showBounds();
+      //rootNode.showBounds();
       testApp.update = function(info){
         //rootNode.showBounds();
         document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";

@@ -2,6 +2,7 @@
 
   var _renderer, undef;
   var renderer = {};
+  var prevwidth= 0, prevHeight = 0; 
 
   Object.defineProperties(renderer, {
     "_canvas": {
@@ -59,8 +60,8 @@
   });
 
   var removeHandlers = function(renderer) {
-
-    };
+    
+  };
   var removeglcontext = function(renderer) {
 
     };

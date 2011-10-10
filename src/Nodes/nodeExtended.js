@@ -17,8 +17,8 @@
   p.lookAt = function(pos, upDir){
     
     var direction,left;
-    var up = upDir || [0,1,0];
-    direction = vec3.direction(this.worldTranslation,pos,[]);
+    var up = upDir || vec3.create([0,1,0]);
+    direction = vec3.direction(this.worldTranslation,pos,vec3.create());
 
     
     left = vec3.create(up);

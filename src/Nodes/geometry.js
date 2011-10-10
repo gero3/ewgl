@@ -77,15 +77,14 @@
   
   var calculateUpdateBoundingBox = function(geom1){
     var mesh = geom1.mesh,x,y,z;
-    
-    if (mesh.flags.boundingBoxChanged){
-      if (!mesh.boundingBox){
-        mesh.boundingBox = new global.boundingBox();
-      }
-      mesh.boundingBox.getBoundingFromPoints(mesh.vertexbuffers.position.getData());
-      mesh.flags.boundingBoxChanged = false;        
-    }
     if (! geom1.flags.NoBoundingBox){
+      if (mesh.flags.boundingBoxChanged){
+        if (!mesh.boundingBox){
+          mesh.boundingBox = new global.boundingBox();
+        }
+        mesh.boundingBox.getBoundingFromPoints( mesh.vertexbuffers.position.getData() );
+        mesh.flags.boundingBoxChanged = false;        
+      }
       var matrix = geom1.matrix;
       var mb = mesh.boundingBox;
       

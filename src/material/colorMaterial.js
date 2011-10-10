@@ -58,16 +58,15 @@
         if (mesh.vertexbuffers.color.flags.dataChanged){
           renderer.AdjustGLBuffer(mesh.vertexbuffers.color);
         }
-        
+        /*
         if (mesh.vertexbuffers.texture.flags.dataChanged){
           renderer.AdjustGLBuffer(mesh.vertexbuffers.texture);
         }
-        
+        */
         if (mesh.vertexbuffers.indices.flags.dataChanged){
           renderer.AdjustGLELMENTBuffer(mesh.vertexbuffers.indices);
         }
-        
-        
+      
         gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.position.glObject);
         gl.vertexAttribPointer(shaderProgram.attributes.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 

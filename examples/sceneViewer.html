@@ -3,8 +3,9 @@
     <title>index</title> 
     
     <script src="includes/jquery.js"></script>
-    <script src="includes/jquery-ui.js"></script>
-    <link rel="stylesheet" href="includes/jquery.css" type="text/css" media="all" />
+    <script src="includes/kendo.all.min.js"></script>
+    <link rel="stylesheet" href="includes/kendo.common.min.css" type="text/css" media="all" />  
+    <link rel="stylesheet" href="includes/kendo.kendo.min.css" type="text/css" media="all" />
     
     <script src="../src/core.js"></script>
     <script src="../src/math/glmatrix.js"></script> 
@@ -60,61 +61,40 @@
     <script src="../src/stats.js"></script> 
     <script src="../src/application.js"></script>
     <style type="text/css"> 
+    body { 
+      height: 100%;
+      width: 100%;
+      margin: 0px;
+      overflow: none;
+    }
+      
+    #splitter { 
+      height: 100%;
+      width: 100%;
+      overflow: none;
+    }
     #3Dviewer {
-      display: block;
-      position: absolute;
-      left :0px;
-      top: 0px;
-      right:0px;
-      bottom: 0px;
-      z-index:100;
+      height: 100%;
+      width: 100%;
     }
-    #container{
-      display: block;
-      position: absolute;
-      left :0px;
-      top: 0px;
-      right:250px;
-      bottom: 0px;
-    }
-    #tree{
-      display: block;
-      position: absolute;
-      width:250px;
-      right:0px;
-      top: 0px;
-      bottom: 0px;
-      z-index:100;
-      overflow: scroll;
-    }
-    #ambientLightSlider {
-      z-index:200;
-      display: block;
-      position: absolute;
-      right :30px;
-      width : 200px;
-      height : 10px;
-      top: 10px;
-    }
-    
-    #console1 {
-      z-index:200;
-      display: block;
-      position: absolute;
-      left: 0px;
-      bottom :0px;
-      width : 100%;
-      color: white;
-      font-weight:bold;
-      vertical-align:bottom;
-    }
-    
+
     </style> 
     
   </head>   
   <body> 
-    <div id="container"><canvas id="3Dviewer">This is a test</canvas></div>
-    <div id="tree"></div>
+    <div id ="splitter" >
+      <div id="container"><canvas id="3Dviewer">This is a test</canvas></div>
+      <div id="tree"></div>
+    </div>
+    <script>
+      $("#splitter").kendoSplitter({
+                        panes: [
+                            { collapsible: false, min:"200px"},
+                            { collapsible: true, size: "200px" }
+                        ]
+      });
+    </script>
+    
     <script> 
       var testApp = new EWGL.app({"canvas":{
                                     "id": "3Dviewer",

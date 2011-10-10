@@ -29,10 +29,12 @@
     
     
     this.setData = function(dataObject){
+      var flagsToset = mesh.flagsToSet[this.type];
+      
       data = dataObject;
       this.size = data.length;
       this.flags.dataChanged = true;
-      var flagsToset = mesh.flagsToSet[this.type];
+
       if(flagsToset){
         for(var i = 0,l =flagsToset.length;i<l;i++){
           this._mesh.flags[flagsToset[i]] = true;

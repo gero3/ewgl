@@ -11,6 +11,10 @@
     this.flags = {};
     this.controllers = [];
     
+    this._rotation = quat4.create();
+    this._translation = vec3.create();
+    this._scale = vec3.create();
+    
     this.rotation = args.rotation || quat4.create([0,0,0,1]);
     this.translation = args.translation || vec3.create();
     this.scale = args.scale || vec3.create([1,1,1]);
@@ -98,7 +102,7 @@
         return this._rotation;
       },
       "set" : function(rot){
-          this._rotation = rot;
+          quat4.set(rot,this._rotation) ;
           this.setUpdateMatrixFlag();
           this.setUpdateBoundingBoxFlag();
       }
@@ -114,7 +118,7 @@
         return this._translation;
       },
       "set" : function(pos){
-          this._translation = pos;
+          vec3.set(pos,this._translation);
           this.setUpdateMatrixFlag();
           this.setUpdateBoundingBoxFlag();
       }
@@ -133,7 +137,7 @@
           if (!scale.length){
             scale = [scale,scale,scale];
           }
-          this._scale= scale;
+          vec3.set(scale,this._scale);
           this.setUpdateMatrixFlag();
           this.setUpdateBoundingBoxFlag();
       }
@@ -430,32 +434,51 @@
               b.plusZ = bc.plusZ;
             }
               
-        };
-      };
-    };
+        }
+      }
+    }
     
   };
   
+  var destMatrix = mat4.create();
   var calculateUpdateMatrix = function(node1){
+    
     var parent = node1.parent;
+    
+    var node1Scale = node1.scale;
+    var node1Rotation =node1.rotation;
+    var node1Translation = node1.translation;
+    
+    
+    var matrix = node1._matrix;
+    var node1WorldScale = node1._worldScale;
+    var node1WorldRotation = node1._worldRotation;
+    var node1WorldTranslation = node1._worldTranslation;
+    
     if(node1.flags.UpdateMatrix){
       if (parent){
-        vec3.scaleVec3(node1.scale,parent.worldScale,node1._worldScale);
-        quat4.multiply(parent.worldRotation,node1.rotation,node1._worldRotation);
-        quat4.multiplyVec3(parent.worldRotation,node1.translation ,node1._worldTranslation);
-        vec3.scaleVec3(node1._worldTranslation,parent.worldScale);
-        vec3.add(node1._worldTranslation,parent.worldTranslation);
+        
+        var parentWorldScale = parent.worldScale;
+        var parentWorldRotation = parent.worldRotation;
+        var parentWorldTranslation = parent.worldTranslation;
+        
+        
+        vec3.scaleVec3(node1Scale,parentWorldScale,node1WorldScale);
+        quat4.multiply(parentWorldRotation,node1Rotation,node1WorldRotation);
+        quat4.multiplyVec3(parentWorldRotation,node1.translation ,node1WorldTranslation);
+        vec3.scaleVec3(node1WorldTranslation,parentWorldScale);
+        vec3.add(node1WorldTranslation,parentWorldTranslation);
+        
       } else {
-        node1._worldRotation = node1._rotation;
-        node1._worldTranslation = node1._translation;
-        node1._worldScale = node1._scale;
-      }; 
-      mat4.identity(node1._matrix);
-      mat4.scale(node1._matrix,node1._worldScale);
-      mat4.multiply(node1._matrix,quat4.toMat4(node1._worldRotation));
-      mat4.setTranslation(node1._matrix,node1._worldTranslation);
+        vec3.set(node1._scale,node1WorldScale);
+        quat4.set(node1._rotation,node1WorldRotation);
+        vec3.set(node1._translation,node1WorldTranslation);
+      }
+      
+      mat4.compose(node1WorldTranslation,node1WorldRotation,node1WorldScale,matrix);
+      
       node1.flags.UpdateMatrix = false;
-    };
+    }
   };
   
   nexboundingboxCounter = 0;

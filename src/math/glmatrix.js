@@ -194,11 +194,8 @@ vec3.scale = function(vec, val, dest) {
 };
 
 vec3.scaleVec3 = function(vec, vec2, dest) {
-  if(!dest || vec == dest) {
-    vec[0] *= vec2[0];
-    vec[1] *= vec2[1];
-    vec[2] *= vec2[2];
-    return vec;
+  if(!dest) {
+    dest = vec;
   }
   
   dest[0] = vec[0]*vec2[0];

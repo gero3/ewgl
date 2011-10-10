@@ -38,7 +38,7 @@
     var time = +(new Date()) - this.startTime;
     var angle = time * this.rpm/60000;
     var axis = vec3.normalize(this.axis,vec3.create());
-    this.node.rotation = quat4.create([axis[0]* Math.sin(angle/2),axis[1]* Math.sin(angle/2),axis[2]* Math.sin(angle/2),Math.cos(angle/2)]);
+    this.node.rotation = [axis[0]* Math.sin(angle/2),axis[1]* Math.sin(angle/2),axis[2]* Math.sin(angle/2),Math.cos(angle/2)];
   };
   
   positionController.prototype.changedNode = function(){  
