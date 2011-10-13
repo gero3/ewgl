@@ -20,7 +20,7 @@
     this.scale = args.scale || vec3.create([1,1,1]);
     
     this._worldRotation = quat4.create([0,0,0,1]);
-    this._worldTranslation = vec3.create();
+    this._worldTranslation = vec3.create([0,0,0]);
     this._worldScale = vec3.create([1,1,1]);
     this._matrix = mat4.create();
     
@@ -107,7 +107,7 @@
           this.setUpdateBoundingBoxFlag();
       }
     },
-    
+
     "_translation":{
       "value":vec3.create(),
       "configurable" : true,   
@@ -465,7 +465,7 @@
         
         vec3.scaleVec3(node1Scale,parentWorldScale,node1WorldScale);
         quat4.multiply(parentWorldRotation,node1Rotation,node1WorldRotation);
-        quat4.multiplyVec3(parentWorldRotation,node1.translation ,node1WorldTranslation);
+        quat4.multiplyVec3(parentWorldRotation,node1Translation ,node1WorldTranslation);
         vec3.scaleVec3(node1WorldTranslation,parentWorldScale);
         vec3.add(node1WorldTranslation,parentWorldTranslation);
         
@@ -478,6 +478,7 @@
       mat4.compose(node1WorldTranslation,node1WorldRotation,node1WorldScale,matrix);
       
       node1.flags.UpdateMatrix = false;
+      node1.flags.MatrixUpdated = true;
     }
   };
   
@@ -516,4 +517,3 @@
   
   global.node = node;
 }(EWGL));
-

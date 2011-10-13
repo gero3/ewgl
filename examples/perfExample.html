@@ -11,6 +11,8 @@
     <script src="../src/math/glmatrixUtils/vec3.js"></script>
     <script src="../src/math/glmatrixUtils/mat4.js"></script>
     <script src="../src/math/boundingBox.js"></script> 
+    <script src="../src/math/plane.js"></script> 
+    <script src="../src/math/frustrum.js"></script> 
     
     <script src="../src/input/inputmanager.js"></script> 
     <script src="../src/input/keyboard.js"></script> 
@@ -48,7 +50,7 @@
     <script src="../src/primitives/quad.js"></script> 
     <script src="../src/primitives/cube.js"></script>
     <script src="../src/primitives/sphere.js"></script> 
-    <script src="../src/primitives/skybox.js"></script> 
+    <script src="../src/primitives/skybox.js"></script>  
     <script src="../src/primitives/boundingBoxOutline.js"></script>
  
     <script src="../src/loaders/loader.js"></script> 
@@ -62,6 +64,8 @@
         
     <script src="../src/stats.js"></script> 
     <script src="../src/application.js"></script>
+    
+    <script src="threejsLoader.js"></script>
     <style type="text/css"> 
     canvas {
       display: block;
@@ -124,7 +128,7 @@
 //      var input = testApp.input;
       var assets = testApp.assetManager;
       
-      camera.translation = [0.0, 10.0, 35.0];
+      camera.translation = [0.0, 0.0, 35.0];
       camera.addController(new EWGL.distanceAngleController({}));      
       
       var objects = rootNode.attachNewNode({"name":"objects"}); 
@@ -140,27 +144,23 @@
                                           });
       sphere.setColor([0.7,0.7,0.7]);
       
-      for(var i = 0;i<1000;i++){
-        sphere = objects.attachNewSphere({"name":"Sphere" + i,
-                                              "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
+      for(var i = 0;i<5000;i++){
+        sphere = objects.attachNewMonkey({"name":"Sphere" + i,
+                                              "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
                                               "scale":Math.random(),
                                               "material": EWGL.colorMaterial,
-                                              "latitudeBands": 20,
-                                              "longitudeBands": 20
         });
         sphere.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
         //sphere.addController(new EWGL.positionController({"rpm":20,"axis":[1,1,1]}));
       };
-      
+      var start = +(Date.now()),started,ended;
       //rootNode.showBounds();
       testApp.update = function(info){
-        //rootNode.showBounds();
         document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";
       };
       
-      objects.addController(new EWGL.positionController({"rpm":20,"axis":[1,1,1]}));
+      //objects.addController(new EWGL.positionController({"rpm":2,"axis":[1,1,1]}));
                                                             
-      //testApp.renderOnce();
       testApp.startRendering();
       
     </script> 

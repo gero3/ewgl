@@ -95,7 +95,7 @@
     },
     "inverseMatrix": {
       "get" : function(){
-        if (this.flags.changedInverseWorldMatrix){
+        if (this.flags.UpdateMatrix || this.flags.MatrixUpdated){
           updateInverseMatrix(this);
         }
         return this._inverseMatrix;
@@ -116,14 +116,9 @@
     }
   };
   
-  cameraNode.prototype.setUpdateMatrixFlag = function(){
-    this.flags.changedInverseWorldMatrix = true;
-    node.prototype.setUpdateMatrixFlag.apply(this);
-  };
-  
   var updateInverseMatrix = function(node1){
     mat4.inverse(node1.matrix,node1._inverseMatrix);
-    node1.flags.changedInverseWorldMatrix = false;
+    node1.flags.MatrixUpdated = false;
   };
   
   global.cameraNode = cameraNode;

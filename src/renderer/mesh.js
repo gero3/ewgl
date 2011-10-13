@@ -1,8 +1,10 @@
 (function(global){
 
   var undef;
+  var counterId = 0;
   
   var mesh = function(){
+    this.meshId = "mesh" + (counterId++);
     this.flags = {};
     this.vertexbuffers = {};
   };

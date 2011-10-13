@@ -11,9 +11,11 @@
     if (materialList.materials.length === 0 ){
       materialList.baseMaterial = material;
     }
-    if (materialList.materials.indexOf(material)){
+    if ( materialList.materials.indexOf(material)){
       materialList.materials.push(material);
-    };
+    } else {
+      console.log("material was already registered");
+    }
   };
   
   
