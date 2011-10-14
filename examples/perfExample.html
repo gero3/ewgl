@@ -122,19 +122,16 @@
     
     
     
-      var testApp = new EWGL.app();
-      var rootNode = testApp.rootNode;
-      var camera = testApp.camera;
-//      var input = testApp.input;
-      var assets = testApp.assetManager;
+      var performanceApp = new EWGL.app();
+      var rootNode = performanceApp.rootNode;
+      var camera = performanceApp.camera;
       
       camera.translation = [0.0, 0.0, 35.0];
       camera.addController(new EWGL.distanceAngleController({}));      
       
       var objects = rootNode.attachNewNode({"name":"objects"}); 
+      objects.addController(new EWGL.positionController({"rpm":10,"axis":[0,1,0]}));
       
-      
-      //testApp.mainLight.removeParent();
       rootNode.attachNewDirectionalLight({"name":"Light1","color":[1,1,1],"direction":[0.0, 10.0, 35.0]}); 
       
       var sphere = rootNode.attachNewSphere({"name":"test",
@@ -144,24 +141,23 @@
                                           });
       sphere.setColor([0.7,0.7,0.7]);
       
-      for(var i = 0;i<5;i++){
-        sphere = objects.attachNewMonkey({"name":"Sphere" + i,
-                                              "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
-                                              "scale":Math.random(),
-                                              "material": EWGL.colorMaterial,
+      for(var i = 0;i<200;i++){
+        var monkey = objects.attachNewMonkey({"name":"Sphere" + i,
+                                          "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
+                                          "scale":Math.random(),
+                                          "material": EWGL.colorMaterial,
         });
-        sphere.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
-        //sphere.addController(new EWGL.positionController({"rpm":20,"axis":[1,1,1]}));
-      };
-      var start = +(Date.now()),started,ended;
-      //rootNode.showBounds();
-      testApp.update = function(info){
-        document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";
+        monkey.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
+        monkey.addController(new EWGL.positionController({"rpm":60,"axis":[-1,0,0]}));
+        
       };
       
-      objects.addController(new EWGL.positionController({"rpm":2,"axis":[1,1,1]}));
-                                                            
-      testApp.startRendering();
+      
+      
+      performanceApp.update = function(info){
+        document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";
+      };                                                  
+      performanceApp.startRendering();
       
     </script> 
   </body> 

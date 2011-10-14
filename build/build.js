@@ -23,6 +23,10 @@ var files = [
   "src/renderer/shaderProgram.js",
   "src/renderer/shaderExtension.js",
   
+  "src/Nodes/node.js",
+  "src/Nodes/nodeExtended.js",
+  "src/Nodes/cameraNode.js",
+  "src/Nodes/geometry.js",
   
   "src/Nodes/light/lights.js",
   "src/Nodes/light/light.js",
