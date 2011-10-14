@@ -1,6 +1,7 @@
 (function(global){
   
   var node = global.node;
+  var frustrum = global.frustrum;
   
   var undef;
   var cameraNode = function cameraNode(args){
@@ -9,6 +10,7 @@
     
     this._perspective = mat4.create();
     this._inverseMatrix = mat4.create(); 
+    this.frustrum = frustrum.create();
     return this;
   };
   
@@ -119,6 +121,12 @@
   var updateInverseMatrix = function(node1){
     mat4.inverse(node1.matrix,node1._inverseMatrix);
     node1.flags.MatrixUpdated = false;
+  };
+  
+  var nodeUpdate = node.prototype.update;
+  cameraNode.prototype.update = function(info){
+      nodeUpdate.call(this,info);
+      this.frustrum.extractPlanes(this.perspective,this.inverseMatrix);
   };
   
   global.cameraNode = cameraNode;

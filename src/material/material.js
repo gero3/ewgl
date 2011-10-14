@@ -13,7 +13,7 @@
       args = {};
     }
     
-    materialList.registerMaterial(this);
+    //materialList.registerMaterial(this);
     
     this.meshes = {}; 
     this.geometries = [];
@@ -37,6 +37,34 @@
   p.update = function(){};
   
   p.render = function(){};
+  
+  p.addGeometry = function(geom){
+    var mesh  = geom.mesh;
+    if (mesh){
+      var id = this.meshes[mesh.meshId];
+      if (id === undefined){
+        this.meshes[mesh.meshId] = this.geometries.length; 
+        this.geometries.push([geom]);
+      } else {
+        this.geometries[id].push(geom);
+      }
+    }
+  };
+  
+  p.removeGeometry = function(geom){
+    var mesh  = geom.mesh;
+    if (mesh){
+      var id = this.meshes[mesh.meshId];
+      var geoms = this.geometries[id];
+      if (geoms.length > 1){
+        geoms.splice(geoms.indexOf(geom),1);
+      } else {
+        geoms = [];
+      }
+      
+    }
+  };  
+  
   
   /*********************************************************************/
   /*                                                                   */

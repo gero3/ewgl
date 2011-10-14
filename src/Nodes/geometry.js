@@ -36,20 +36,15 @@
       "set" : function(mesh){
         if (mesh !== this._mesh){
           var id;
-          if (this._material && this._mesh){
-            id = this._material.meshes[this._mesh.meshId];      
-            this._material.geometries[id].splice(this._material.geometries[id].indexOf(this),1);
+          if (this._material){
+            this._material.removeGeometry(this);
           }
+          
           this._mesh= mesh;
           this._mesh.flags.changedMesh = true;
-          if (this._material &&  this._mesh){ 
-             id = this._material.meshes[this._mesh.meshId];
-            if (id === undef){
-              this._material.meshes[this._mesh.meshId] = this._material.geometries.length;
-              id = this._material.geometries.length;
-              this._material.geometries[id] = [];
-            }
-            this._material.geometries[id].push(this);
+          
+           if (this._material){   
+            this._material.addGeometry(this);
           }
         }
       }
@@ -65,22 +60,16 @@
       },
       "set" : function(material){
         var id;
-        if (this._material && this._mesh){
-          id = this._material.meshes[this._mesh.meshId];      
-          this._material.geometries[id].splice(this._material.geometries[id].indexOf(this),1);
-        }
-       
+        if (this._material != material){
+          if (this._material){
+            this._material.removeGeometry(this);
+          }
+          
           this._material= material;
           this.flags.changedMaterial = true;
-        if (material){   
-          if( this._mesh){
-            id = this._material.meshes[this._mesh.meshId];
-            if (id === undef){
-              this._material.meshes[this._mesh.meshId] = this._material.geometries.length;
-              id = this._material.geometries.length;
-              this._material.geometries[id] = [];
-            }
-            this._material.geometries[id].push(this);
+        
+          if (this._material){   
+            this._material.addGeometry(this);
           }
         }
       }

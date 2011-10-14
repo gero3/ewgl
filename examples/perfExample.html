@@ -144,9 +144,9 @@
                                           });
       sphere.setColor([0.7,0.7,0.7]);
       
-      for(var i = 0;i<5000;i++){
+      for(var i = 0;i<5;i++){
         sphere = objects.attachNewMonkey({"name":"Sphere" + i,
-                                              "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
+                                              "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
                                               "scale":Math.random(),
                                               "material": EWGL.colorMaterial,
         });
@@ -159,7 +159,7 @@
         document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";
       };
       
-      //objects.addController(new EWGL.positionController({"rpm":2,"axis":[1,1,1]}));
+      objects.addController(new EWGL.positionController({"rpm":2,"axis":[1,1,1]}));
                                                             
       testApp.startRendering();
       
