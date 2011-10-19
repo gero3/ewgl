@@ -120,8 +120,6 @@
     
     <script> 
     
-    
-    
       var performanceApp = new EWGL.app();
       var rootNode = performanceApp.rootNode;
       var camera = performanceApp.camera;
@@ -142,7 +140,7 @@
       sphere.setColor([0.7,0.7,0.7]);
       
       for(var i = 0;i<200;i++){
-        var monkey = objects.attachNewMonkey({"name":"Sphere" + i,
+        var monkey = objects.attachNewSphere({"name":"Sphere" + i,
                                           "translation":[Math.random()*20-10,Math.random()*20-10,Math.random()*20-10],
                                           "scale":Math.random(),
                                           "material": EWGL.colorMaterial,

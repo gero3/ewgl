@@ -73,7 +73,7 @@
         cameraMatrix =  colorMaterial.renderer.camera.matrix;
         for(j=0;j<geomLength;j++){
           geom = geoms[j];
-          if (camera.frustrum.isInFrustrum(geom.boundingBox)){
+
             matrix =  geom.matrix;
             
             gl.uniformMatrix4fv(shaderProgram.uniforms.mvMatrixUniform, false, matrix);
@@ -83,8 +83,11 @@
             test2 = mat3.transpose(test2);
             
             gl.uniformMatrix3fv(shaderProgram.uniforms.NMatrixUniform, false, test2);   
-
+          if (camera.frustrum.isInFrustrum(geom.boundingBox)){
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, 0);
+          } else {
+            //gl.drawElements(gl.LINES, size, gl.UNSIGNED_SHORT, 0);
+          
           } 
         }
         
