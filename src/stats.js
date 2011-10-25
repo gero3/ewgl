@@ -22,7 +22,7 @@
   stats.prototype.update = function(info){
     timeCapsule = this.timeCapsule;
     
-    newTime = +(new Date());
+    newTime = Date.now();
     prevTime = timeCapsule[99];
     firstTime = timeCapsule[0];
     
@@ -31,6 +31,7 @@
     
     this.counter++; 
     
+    info.now = newTime;
     info.timeElapsed = newTime - prevTime;
     info.counter = this.counter;
     info.AvgTime = (newTime - firstTime)/99;

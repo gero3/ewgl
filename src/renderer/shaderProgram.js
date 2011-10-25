@@ -26,17 +26,17 @@
     var shaderExts = this.extensions;
     
     var stackId = "";
-    var vsID = (vsmain.calculateID && vsmain.calculateID()) || 1;
+    var vsID = (vsmain.calculateID && vsmain.calculateID()) || 0;
     stackId += "V" + vsmain + "," + vsID;
 
-    var fsID = (fsmain.calculateID && fsmain.calculateID()) || 1;
+    var fsID = (fsmain.calculateID && fsmain.calculateID()) || 0;
     stackId += "F" + fsmain + "," + fsID;
     
     
     var registerID = [];
     for(i = 0,l=shaderExts.length;i<l;i++){
       shaderExt = shaderExts[i];
-      registerID[i] = (shaderExt.calculateID && shaderExt.calculateID()) || 1;
+      registerID[i] = (shaderExt.calculateID && shaderExt.calculateID()) || 0;
       stackId += "E" + shaderExt.shaderExtensionCounter + "," + registerID[i];
     }
     

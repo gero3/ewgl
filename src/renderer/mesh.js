@@ -61,6 +61,11 @@
   
   
   mesh.flagsToSet = {};
+  
+  mesh.addFlagsToSet = function(type,flag){
+     mesh.flagsToSet[type] = mesh.flagsToSet[type] || [];
+     mesh.flagsToSet[type].push(flag);
+  };
   global.mesh = mesh;
   global.vertexbufferType = vertexbufferType;
   

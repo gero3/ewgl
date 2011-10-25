@@ -70,12 +70,13 @@
         
         geoms = colorMaterial.geometries[i];
         size = mesh.vertexbuffers.indices.size;
-        cameraMatrix =  colorMaterial.renderer.camera.matrix;
+        camera = colorMaterial.renderer.camera;
+        cameraMatrix =  camera.matrix;
         for(j=0;j<geomLength;j++){
           geom = geoms[j];
-
+          if (geom.lastUpdate === this.lastUpdate && this.isInFrustrum(geom,mesh,camera)){
             matrix =  geom.matrix;
-            
+
             gl.uniformMatrix4fv(shaderProgram.uniforms.mvMatrixUniform, false, matrix);
             
             var test = mat4.multiply(cameraMatrix,matrix,testMatrix4);
@@ -83,14 +84,17 @@
             test2 = mat3.transpose(test2);
             
             gl.uniformMatrix3fv(shaderProgram.uniforms.NMatrixUniform, false, test2);   
-          if (camera.frustrum.isInFrustrum(geom.boundingBox)){
+
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, 0);
           } else {
             //gl.drawElements(gl.LINES, size, gl.UNSIGNED_SHORT, 0);
-          
+            if (! info.frustrumCulled){
+              info.frustrumCulled = 1;
+            }else {
+               info.frustrumCulled++; 
+            }
           } 
         }
-        
       }
     }
   };

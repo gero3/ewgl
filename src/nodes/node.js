@@ -1,6 +1,10 @@
 (function(global){
+  
+  var list = EWGL.list;
+  
   var counterid = 0;
   var undef,p;
+  
   var node = function(argus){
     
     var args = argus || {};
@@ -24,11 +28,19 @@
     this._worldScale = vec3.create([1,1,1]);
     this._matrix = mat4.create();
     
+    this._worldInfo = {
+      "worldScale" : this._worldScale,
+      "worldTranslation" : this._worldTranslation,
+      "worldRotation" : this._worldRotation,
+      "matrix" : this._matrix
+    };
+    
     this._boundingBox = new EWGL.boundingBox();
     
     
+    
     this.parent = args.parent || undef;
-    this.children = args.children || [];
+    this.children = new list(args.children);
     
     return this;
   };
@@ -64,6 +76,7 @@
         }
       }
     },
+    
     
     "_id": { 
       "value" : undef,
@@ -159,10 +172,24 @@
         return this._children;
       },
       "set" : function(children){
-        if (this._children !== children){ 
-          removeAllChildren(this);
-          addChildren(this,children);
-        };
+        if (list.isList(children)){
+          
+          this._children = children;
+          var self = this;
+          
+          children.itemAdded = function(item){
+            item._parent = self; 
+            self.flags.hasChildren = true;
+          };
+          
+          children.itemRemoved = function(item){
+            item._parent = undef;
+            if (children.length ===0){
+              self.flags.hasChildren = false;
+            }
+          };
+          
+        }
       }
     },
     
@@ -239,6 +266,20 @@
       }
     },
     
+    "_worldInfo" : {
+      "value" : undef,
+      "configurable" : true,   
+      "writable": true
+    },
+    "worldInfo" : {
+      "get" : function(){
+        if (this.flags.UpdateMatrix){
+          calculateUpdateMatrix(this);
+        };
+        return this._worldInfo;
+      }
+    },
+    
     "_boundingBox" : {
       "value" : undef,
       "configurable" : true,   
@@ -277,9 +318,13 @@
     for(i = 0;i<l;i++){
       this.controllers[i].update(info);
     }  
-    l = this.children.length;
-    for(i = 0;i<l;i++){
-      this.children[i].update(info);
+
+    if (this.flags.hasChildren ){
+      var i2,children = this.children,l2 = children.length;
+          
+      for(i2 = 0;i2<l2;i2++){
+        children[i2].update(info);
+      }
     }
   };
   
@@ -347,50 +392,33 @@
     }
   };
   
-  var removeAllChildren = function(node1){
-    var c = node1._children,l,i;
-    if (c != undef && c.length > 0){
-      l = c.length;
-      for(i = 0;i <l;i++){
-        c[i]._parent = undef;
-      }
-    }
-    node1._children = [];
-  };
-  
   var addChildren = function(node1,children){
     var c,l,i,children2;
     if (children){
       l = children.length;
       if (!l){
-        children2 = [children];
-        l = 1;
+        node1.children.add(children);
       } else {
-        children2 = children;
-      }
-      for (i = 0;i<l;i++){
-        children2[i].parent = node1;
+        node1.children.addRange(children);
       }
     }
   };
   
   var removeParent = function(node1){
-    var i = node1.parent.children.indexOf(node1);
-    if (i !== -1) {
-      node1.parent.children.splice(i,1);
-      node1.parent = undef;
+    if (node1.parent !==  undef){ 
+      node1.parent.children.remove(node1);
     }
   };
   
   var setParent = function(node1,parent){
     if (node1.parent !==  undef){
       node1.removeParent();
-    };
+    }
     node1._parent = parent;
     
     if (parent !== undef) {
-      node1._parent._children.push(node1);
-    };
+      node1._parent._children.add(node1);
+    }
   };
 
   
@@ -457,10 +485,10 @@
     
     if(node1.flags.UpdateMatrix){
       if (parent){
-        
-        var parentWorldScale = parent.worldScale;
-        var parentWorldRotation = parent.worldRotation;
-        var parentWorldTranslation = parent.worldTranslation;
+        var worldInfo = parent.worldInfo;
+        var parentWorldScale = worldInfo.worldScale;
+        var parentWorldRotation = worldInfo.worldRotation;
+        var parentWorldTranslation = worldInfo.worldTranslation;
         
         
         vec3.scaleVec3(node1Scale,parentWorldScale,node1WorldScale);

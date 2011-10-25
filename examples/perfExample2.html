@@ -1,0 +1,166 @@
+<html> 
+  <head> 
+    <title>index</title> 
+    
+    <script src="includes/jquery.js"></script>
+    <script src="includes/jquery-ui.js"></script>
+    <link rel="stylesheet" href="includes/jquery.css" type="text/css" media="all" />
+    
+    <script src="../src/core/core.js"></script>    
+    <script src="../src/core/list.js"></script>
+    <script src="../src/math/glmatrix.js"></script> 
+    <script src="../src/math/glmatrixUtils/vec3.js"></script>
+    <script src="../src/math/glmatrixUtils/mat4.js"></script>
+    <script src="../src/math/boundingSphere.js"></script> 
+    <script src="../src/math/boundingBox.js"></script> 
+    <script src="../src/math/plane.js"></script> 
+    <script src="../src/math/frustrum.js"></script> 
+    
+    <script src="../src/input/inputmanager.js"></script> 
+    <script src="../src/input/keyboard.js"></script> 
+    <script src="../src/input/mouse.js"></script>
+    
+    <script src="../src/renderer/renderer.js"></script>
+    <script src="../src/renderer/mesh.js"></script> 
+    <script src="../src/renderer/vertexbuffer.js"></script> 
+    <script src="../src/renderer/texture.js"></script> 
+    <script src="../src/renderer/shaderProgram.js"></script>
+    <script src="../src/renderer/shaderExtension.js"></script>
+    
+    <script src="../src/nodes/node.js"></script> 
+    <script src="../src/nodes/nodeExtended.js"></script> 
+    <script src="../src/nodes/cameraNode.js"></script>
+    <script src="../src/nodes/geometry.js"></script>
+    
+    <script src="../src/nodes/light/lights.js"></script> 
+    <script src="../src/nodes/light/light.js"></script> 
+    <script src="../src/nodes/light/ambientLight.js"></script>
+    <script src="../src/nodes/light/directionalLight.js"></script>
+    
+    <script src="../src/material/shaderExtensions/baseShader.js"></script>
+    <script src="../src/material/shaderExtensions/colorShader.js"></script>
+    <script src="../src/material/shaderExtensions/whiteColorShader.js"></script>
+    
+    <script src="../src/material/materialList.js"></script>
+    <script src="../src/material/material.js"></script> 
+    <script src="../src/material/baseMaterial.js"></script> 
+    <script src="../src/material/colorMaterial.js"></script> 
+    <script src="../src/material/linesMaterial.js"></script> 
+    <script src="../src/material/skyboxMaterial.js"></script>
+    
+    <script src="../src/primitives/triangle.js"></script> 
+    <script src="../src/primitives/quad.js"></script> 
+    <script src="../src/primitives/cube.js"></script>
+    <script src="../src/primitives/sphere.js"></script> 
+    <script src="../src/primitives/skybox.js"></script>  
+    <script src="../src/primitives/boundingBoxOutline.js"></script>
+ 
+    <script src="../src/loaders/loader.js"></script> 
+    <script src="../src/loaders/imageLoader.js"></script>
+    <script src="../src/loaders/textureLoader.js"></script>
+    
+    <script src="../src/controller/controller.js"></script> 
+    <script src="../src/controller/positioncontroller.js"></script> 
+    <script src="../src/controller/pathcontroller.js"></script> 
+    <script src="../src/controller/distanceAngleController.js"></script> 
+        
+    <script src="../src/stats.js"></script> 
+    <script src="../src/application.js"></script>
+    
+    <script src="threejsLoader.js"></script>
+    <style type="text/css"> 
+    canvas {
+      display: block;
+      position: absolute;
+      left :0px;
+      top: 0px;
+      z-index:100;
+    }
+    #ambientLightSlider {
+      z-index:200;
+      display: block;
+      position: absolute;
+      right :30px;
+      width : 200px;
+      height : 10px;
+      top: 10px;
+    }
+    
+    #console1 {
+      z-index:200;
+      display: block;
+      position: absolute;
+      left: 0px;
+      bottom :0px;
+      width : 100%;
+      color: white;
+      font-weight:bold;
+      vertical-align:bottom;
+    }
+    
+    </style> 
+    
+  </head>   
+  <body> 
+  
+    <input id="ambientLightSlider" type="range" name="ambientLight" min="0" max="1" step="0.001" value="1" />
+    <div id="console1"><div>Console: </div></div> 
+    <script> 
+      (function(){
+          var element = document.getElementById("ambientLightSlider"); 
+          element.addEventListener("change",function(){
+              testApp.mainLight.color = vec3.create([element.value,element.value,element.value]);
+              
+          });
+          element.addEventListener("mousedown",function(event){
+            event.stopPropagation();
+          });
+      }());
+        
+    </script>
+    
+    
+    <script> 
+    
+      var performanceApp = new EWGL.app();
+      var rootNode = performanceApp.rootNode;
+      var camera = performanceApp.camera;
+      
+      camera.translation = [0.0, 0.0, 35.0];
+      camera.addController(new EWGL.distanceAngleController({}));      
+      
+      var objects = rootNode.attachNewNode({"name":"objects"}); 
+      objects.addController(new EWGL.positionController({"rpm":10,"axis":[0,1,0]}));
+      
+      rootNode.attachNewDirectionalLight({"name":"Light1","color":[1,1,1],"direction":[0.0, 10.0, 35.0]}); 
+      
+      var sphere = rootNode.attachNewSphere({"name":"test",
+                                            "material": EWGL.colorMaterial,
+                                            "latitudeBands": 9,
+                                            "longitudeBands": 9
+                                          });
+      sphere.setColor([0.7,0.7,0.7]);
+      
+      for(var i = 0;i<5000;i++){
+        var monkey = objects.attachNewSphere({"name":"Sphere" + i,
+                                          "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
+                                          "scale":Math.random(),
+                                          "material": EWGL.colorMaterial,
+                                          "latitudeBands": 9,
+                                          "longitudeBands": 9
+        });
+        monkey.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
+        //monkey.addController(new EWGL.positionController({"rpm":60,"axis":[-1,0,0]}));
+      };
+      
+      
+      
+      performanceApp.update = function(info){        
+        console.log(info.frustrumCulled);
+        document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";
+      };                                                  
+      performanceApp.startRendering();
+      
+    </script> 
+  </body> 
+  </html>

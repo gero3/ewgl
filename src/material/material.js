@@ -111,40 +111,16 @@
                             "data" :normal});
   };
   
-  var FrustrumUpdated,
-      _frustum = [quat4.create(),quat4.create(),quat4.create(),quat4.create(),quat4.create(),quat4.create()],
-      m = mat4.create(); 
-  p.isInFrustrum = function(info,boundingbox,cameraPerspective,cameraMatrix) {
-      var i, plane,l;
-    if (info.count === FrustrumUpdated){
-      FrustrumUpdated = info.count;
-      mat4.multiply(cameraPerspective,cameraMatrix,m);
-      
-      quat4.set( [ m[12] - m[0], m[13] - m[1], m[14] - m[2], m[15] - m[3] ] , _frustum[ 0 ]);
-		  quat4.set( [ m[12] + m[0], m[13] + m[1], m[14] + m[2], m[15] + m[3] ] , _frustum[ 1 ]);
-		  quat4.set( [ m[12] + m[4], m[13] + m[5], m[14] + m[6], m[15] + m[7] ] , _frustum[ 2 ]);
-		  quat4.set( [ m[12] - m[4], m[13] - m[5], m[14] - m[6], m[15] - m[7] ] , _frustum[ 3 ]);
-		  quat4.set( [ m[12] - m[8], m[13] - m[9], m[14] - m[10], m[15] - m[11] ] , _frustum[ 4 ]);
-		  quat4.set( [ m[12] + m[8], m[13] + m[9], m[14] + m[10], m[15] + m[11] ] , _frustum[ 5 ]);
-      
+  p.isInFrustrum = function(geom,mesh,camera) {
+    if (mesh.flags.boundingSphereChanged){
+      if (!mesh.boundingSphere){
+        mesh.boundingSphere = new global.boundingSphere();
+      }
+      mesh.boundingSphere.getBoundingFromPoints( mesh.vertexbuffers.position.getData() );
+      mesh.flags.boundingSphereChanged = false;       
+    };
     
-
-		  for ( i = 0; i < 6; i ++ ) {
-
-			  plane = _frustum[ i ];
-        l = Math.sqrt( plane[0] * plane[0] + plane[1] * plane[1] + plane[2] * plane[2] );
-			  quat4.set([plane[0]/l,plane[1]/l,plane[2]/l,plane[3]/l],plane);
-
-		  }
-    }
-    
-    var radius;
-    for(i=0; i < 6; i++) {
-      radius = - Math.max( boundingbox.plusX -boundingbox.minX/2 , Math.max( boundingbox.plusY -boundingbox.minY/2, boundingbox.plusZ -boundingbox.minZ/2 ))
-
-    }
-
-    return true;
+    return camera.frustrum.isInFrustrum(geom.worldTranslation,geom.worldScale,mesh.boundingSphere);
   };
 
  global.material = material;

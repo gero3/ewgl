@@ -210,7 +210,8 @@
     return new geometry(args);
   };
   
-  global.mesh.flagsToSet.position = ["boundingBoxChanged"];
+  global.mesh.addFlagsToSet("position","boundingBoxChanged");
+  global.mesh.addFlagsToSet("position","boundingSphereChanged");
   
   global.geometry = geometry;
   

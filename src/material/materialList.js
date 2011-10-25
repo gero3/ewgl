@@ -33,6 +33,8 @@
   };
   
   var update = function(info){
+    info.frustrumCulled = 0;
+    
     var lights = global.lights,AllLights,light;
     if (lights){
       AllLights =lights.lights;

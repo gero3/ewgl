@@ -57,7 +57,7 @@
       vs.appendProgram("vLightWeighting = vec3(0.0,0.0,0.0);");
     }
     
-    if (directional > 0) {
+    if (directional >= 1) {
       vs.appendProgram("float directionalWeighting;");
       vs.appendProgram("vec3 transformedNormal;"); 
 
@@ -79,7 +79,7 @@
   lights.fsShaderExtension.generateShaderPieces = function(id){
     var fs = lights.fsShaderExtension;
     var ambient = id%100;
-    var directional = ((id-ambient)/100)%100;
+    var directional = (id-ambient)/100%100;
     var varyingTypes = shaderExt.varying.types;
     
     if (fs.stack[id]){
@@ -89,7 +89,7 @@
     
     fs.clear();
     
-    if (ambient > 0 || directional > 0){
+    if (ambient >= 1 || directional >= 1){
       fs.addVarying("vLightWeighting", varyingTypes.vec3);
       fs.appendProgram("gl_FragColor = vec4(gl_FragColor.rgb * vLightWeighting, gl_FragColor.a);");
     }
@@ -120,6 +120,8 @@
   
   lights.vsShaderExtension.getShaderInputs = getShaderInputs;
   
+  
+  var test = vec3.create();
   var setSimpleLightsUniforms = function(shaderProgram,id){
     
     var uniforms = shaderProgram.uniforms;
@@ -129,9 +131,8 @@
     var gl = renderer.gl;
     var i,l;
     
-    
+    vec3.set([0,0,0],test);
     if (ambient > 0) {
-      var test = vec3.create();
       for (i = 0, l = lights.usedLights[1].length; i < l; i++) {
         vec3.add(test, lights.usedLights[1][i].color);
       }
