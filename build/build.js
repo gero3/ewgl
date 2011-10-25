@@ -1,3 +1,24 @@
+var fs = require('fs');
+var uglifyjs = require('uglify-js');
+var http = require('http');
+var buffer = require('buffer');
+
+var files = require('./files').files;
+
+var ReadFile = function(args,callback){
+  fs.readFile(args.file, args.encoding || 'UTF8', function (err, data) {
+    if (err) throw err;
+    console.log(args.file + " has been read.");
+    args.data = data;
+    callback();
+  });
+};
+
+var readAllFiles = function(args,completeCallBack){
+    var counter= args.length;
+    var callBack = function(){
+      counter--;
+      if (counter ===0){
         completeCallBack();
       }
     };

@@ -77,7 +77,6 @@
       }
     },
     
-    
     "_id": { 
       "value" : undef,
       "configurable" : true,   

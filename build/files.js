@@ -1,11 +1,13 @@
 
 var files = [
-  "src/core.js",
+  "src/core/core.js",
+  "src/core/list.js",
   
   "src/math/glmatrix.js",
   "src/math/glmatrixUtils/vec3.js",
   "src/math/glmatrixUtils/mat4.js",
   "src/math/boundingBox.js",
+  "src/math/boundingSphere.js",
   "src/math/plane.js", 
   "src/math/frustrum.js", 
   
