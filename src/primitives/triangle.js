@@ -26,8 +26,7 @@
                                                            
   };
   
-  triangle.prototype = new geometry();
-  triangle.prototype.material = undef;
+  global.inherit(geometry,triangle);
   
   node.prototype.attachNewTriangle = function(args){ 
     var t = new triangle(args);

@@ -5,7 +5,7 @@
   var geometry = global.geometry;
   var vertexbuffer = global.vertexbuffer;
   
-  var Sphere = function(args){
+  var sphere = function(args){
     geometry.call(this,args);
     
     args = args ||{};
@@ -82,15 +82,14 @@
                                   "data" : textureCoordData});                                                        
     
   };
-  
-  Sphere.prototype = new geometry();
-  Sphere.prototype.material = undef;
+    
+  global.inherit(geometry,sphere);
   
   node.prototype.attachNewSphere = function(args){ 
-    var t = new Sphere(args);
+    var t = new sphere(args);
     this.addChildren(t);
     return t;
   };                                                       
   
-  global.sphere = Sphere;
+  global.sphere = sphere;
 }(EWGL));

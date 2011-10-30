@@ -18,8 +18,7 @@
   };
   
   
-  
-  skybox.prototype = new node();
+  global.inherit(node,skybox);
   
   node.prototype.attachNewSkybox = function(args){
     var t = new skybox(args);

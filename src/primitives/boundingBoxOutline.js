@@ -42,9 +42,8 @@
     this.material = global.debugBoundingBoxesMaterial;
   };
   
+  global.inherit(geometry,boundingBoxOutline);
   
-  
-  boundingBoxOutline.prototype = new geometry();
   boundingBoxOutline.prototype.material = global.debugBoundingBoxesMaterial;
   
   

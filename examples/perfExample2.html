@@ -6,8 +6,10 @@
     <script src="includes/jquery-ui.js"></script>
     <link rel="stylesheet" href="includes/jquery.css" type="text/css" media="all" />
     
-    <script src="../src/core/core.js"></script>    
+    <script src="../src/core/core.js"></script>
+    <script src="../src/core/inheritance.js"></script>   
     <script src="../src/core/list.js"></script>
+    
     <script src="../src/math/glmatrix.js"></script> 
     <script src="../src/math/glmatrixUtils/vec3.js"></script>
     <script src="../src/math/glmatrixUtils/mat4.js"></script>
@@ -149,7 +151,7 @@
         });
         monkey.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
       
-      for(var i = 0;i<5000;i++){
+      for(var i = 0;i<1000;i++){
         var monkey = objects.attachNewGeometry({"name":"Sphere" + i.toString(),
                                           "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
                                           "scale":Math.random(),
@@ -162,7 +164,7 @@
       
       
       performanceApp.update = function(info){        
-        console.log(info.frustrumCulled);
+        //console.log(info.frustrumCulled);
         document.getElementById("console1").innerHTML = "<p>Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms<\p>" +
                                                         "<p> Frustrumculled Objects: " + info.frustrumCulled + " <\p>";
       };                                                  

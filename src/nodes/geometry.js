@@ -21,9 +21,9 @@
     return this;
   };
   
-  geometry.prototype = new node();
+  global.inherit(node,geometry);
   
-  Object.defineProperties(geometry.prototype,{
+  global.defineProperties(geometry.prototype,{
     "_mesh":{
       "value":undef,
       "configurable" : true,   

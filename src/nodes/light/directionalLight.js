@@ -17,7 +17,9 @@
     return this;
   };
   
-  directionalLight.prototype = new light();
+
+  global.inherit(light,directionalLight);
+  
   directionalLight.prototype.type = lights.types.directionalLight;
   
   node.prototype.attachNewDirectionalLight = function(args){

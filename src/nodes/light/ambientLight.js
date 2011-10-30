@@ -11,7 +11,8 @@
     return this;
   };
   
-  ambientLight.prototype = new light();
+  global.inherit(light,ambientLight);
+  
   ambientLight.prototype.type = lights.types.ambientLight;
   
   node.prototype.attachNewAmbientLight = function(args){

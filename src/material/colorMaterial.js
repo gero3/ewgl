@@ -9,6 +9,8 @@
   var testMatrix4 = mat4.create();
   var testMatrix3 = mat3.create();
   
+  var inverse = mat4.inverse;
+  
 
   var colorMaterial = new global.material({"shaderProgram":global.shaders.colorShader});
   
@@ -80,7 +82,7 @@
             gl.uniformMatrix4fv(shaderProgram.uniforms.mvMatrixUniform, false, matrix);
             
             var test = mat4.multiply(cameraMatrix,matrix,testMatrix4);
-            var test2 = mat4.toMat3(mat4.inverse(test),testMatrix3);
+            var test2 = mat4.toMat3(inverse(test),testMatrix3);
             test2 = mat3.transpose(test2);
             
             gl.uniformMatrix3fv(shaderProgram.uniforms.NMatrixUniform, false, test2);   

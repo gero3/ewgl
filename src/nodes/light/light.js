@@ -14,7 +14,8 @@
     return this;
   };
   
-  light.prototype = new node();
+  global.inherit(node,light);
+
   
   global.light = light;
   

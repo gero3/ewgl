@@ -129,8 +129,8 @@
                                                            
   };
   
-  Cube.prototype = new geometry();
-  Cube.prototype.material = undef;
+  
+  global.inherit(geometry,Cube);
 
   node.prototype.attachNewCube = function(args){ 
     var t = new Cube(args);

@@ -15,14 +15,12 @@
   };
   
   
+  global.inherit(node,cameraNode);
+
   
-  cameraNode.prototype = new node();
-  
-  Object.defineProperties(cameraNode.prototype,{
+  global.defineProperties(cameraNode.prototype,{
     "_fovy" : {
       "value": 45,
-      "configurable" : true,   
-      "writable": true
     },
     "fovy" : {
       "get" : function(){

@@ -45,7 +45,7 @@
     return this;
   };
   
-  Object.defineProperties(node.prototype,{
+  global.defineProperties(node.prototype,{
     "_name": { 
       "value" : undef,
       "configurable" : true,   

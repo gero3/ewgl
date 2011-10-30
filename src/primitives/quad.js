@@ -32,8 +32,8 @@
                                                            
   };
   
-  Quad.prototype = new geometry();
-  Quad.prototype.material = undef;
+  
+  global.inherit(geometry,Quad);
   
   node.prototype.attachNewQuad = function(args){ 
     var t = new Quad(args);
