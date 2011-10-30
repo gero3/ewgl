@@ -92,10 +92,10 @@
       position: absolute;
       left: 0px;
       bottom :0px;
-      width : 100%;
       color: white;
       font-weight:bold;
       vertical-align:bottom;
+      background-color:black;
     }
     
     </style> 
@@ -140,16 +140,22 @@
                                             "longitudeBands": 9
                                           });
       sphere.setColor([0.7,0.7,0.7]);
-      
-      for(var i = 0;i<5000;i++){
-        var monkey = objects.attachNewSphere({"name":"Sphere" + i,
+        var monkey = objects.attachNewSphere({"name":"Sphere",
                                           "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
                                           "scale":Math.random(),
                                           "material": EWGL.colorMaterial,
-                                          "latitudeBands": 9,
-                                          "longitudeBands": 9
+                                          "latitudeBands": 20,
+                                          "longitudeBands": 20
         });
         monkey.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
+      
+      for(var i = 0;i<5000;i++){
+        var monkey = objects.attachNewGeometry({"name":"Sphere" + i.toString(),
+                                          "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
+                                          "scale":Math.random(),
+                                          "material": EWGL.colorMaterial,
+                                          "mesh":monkey.mesh
+        });
         //monkey.addController(new EWGL.positionController({"rpm":60,"axis":[-1,0,0]}));
       };
       
@@ -157,7 +163,8 @@
       
       performanceApp.update = function(info){        
         console.log(info.frustrumCulled);
-        document.getElementById("console1").innerHTML = "Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms";
+        document.getElementById("console1").innerHTML = "<p>Frames per seconds: " + info.fps + " = " + parseInt(info.AvgTime) + "ms<\p>" +
+                                                        "<p> Frustrumculled Objects: " + info.frustrumCulled + " <\p>";
       };                                                  
       performanceApp.startRendering();
       

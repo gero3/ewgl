@@ -118,9 +118,9 @@
       }
       mesh.boundingSphere.getBoundingFromPoints( mesh.vertexbuffers.position.getData() );
       mesh.flags.boundingSphereChanged = false;       
-    };
-    
-    return camera.frustrum.isInFrustrum(geom.worldTranslation,geom.worldScale,mesh.boundingSphere);
+    }
+    var worldInfo = geom.worldInfo;
+    return camera.frustrum.isInFrustrum(worldInfo.worldTranslation,worldInfo.worldScale,mesh.boundingSphere);
   };
 
  global.material = material;
