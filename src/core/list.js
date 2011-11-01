@@ -6,29 +6,27 @@
   var pop = Array.prototype.pop;
   var undef;
   
-  var List = function(args) {
-    var i, l;
-    if (Array.isArray(args) || List.isList(args)) {
-      l = args.length;
-      this.length = l;
-      for (i = 0; i < l; i++) {
-        this[i] = args[i];
-      }
-    }
-    else if (args === null || args === undefined) {
-      this.length = 0;
-    }
-    else {
-      this.length = 1;
-      this[0] = args;
-    }
+  var List = function(args,itemAdded,itemRemoved) {
+    this.length = 0;
     
-    this.itemAdded = function(item){};
-    this.itemRemoved = function(item){};
+    this.itemAdded = itemAdded || function(){};
+    this.itemRemoved = itemRemoved || function(){};
     
+    this.add(args);
   };
   
   List.prototype.add = function(args) {
+    if (Array.isArray(args) || List.isList(args)) {
+      this.addRange(args);
+    } else if (args === null || args === undefined) {
+      this.length = 0;
+    } else {
+      this.addOne(args);
+    }
+    return this;
+  };
+  
+  List.prototype.addOne = function(args) {
     this[this.length] = args;
     this.length++;
     this.itemAdded(args);
@@ -56,7 +54,7 @@
   };
   
   List.prototype.clone = function() {
-    return new List(this);
+    return new List(this,this.itemAdded,this.itemRemoved);
   };
   
   List.prototype.clear = function(){

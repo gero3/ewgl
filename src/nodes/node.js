@@ -8,12 +8,22 @@
   var node = function(argus){
     
     var args = argus || {};
-
+    var self = this;
     this.name = args.name;
     this.id = "node" + (counterid++);
     
     this.flags = {};
-    this.controllers = [];
+    this.controllers = new list(args.controllers,
+                                function(item){
+                                  item.node = self;
+                                  self.flags.hasControllers = true;
+                                },
+                                function(item){
+                                  item.node = undef;
+                                  if (children.length === 0){
+                                    self.flags.hasControllers = false;
+                                  }
+                                });
     
     this._rotation = quat4.create();
     this._translation = vec3.create();
@@ -40,7 +50,18 @@
     
     
     this.parent = args.parent || undef;
-    this.children = new list(args.children);
+    this.children = new list( args.children,
+                              function(item){
+                                item._parent = self; 
+                                self.flags.hasChildren = true;
+                              },
+                              function(item){
+                                item._parent = undef;
+                                if (children.length ===0){
+                                  self.flags.hasChildren = false;
+                                }
+                              });
+          
     
     return this;
   };
@@ -48,8 +69,6 @@
   global.defineProperties(node.prototype,{
     "_name": { 
       "value" : undef,
-      "configurable" : true,   
-      "writable": true
     },
     "name": {
       "get" : function(){
@@ -78,9 +97,7 @@
     },
     
     "_id": { 
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "id": {
       "get" : function(){
@@ -105,9 +122,7 @@
       }
     },
     "_rotation": { 
-      "value" : quat4.create([0,0,0,1]),
-      "configurable" : true,   
-      "writable": true
+      "value" : quat4.create([0,0,0,1])
     },
     "rotation": {
       "get" : function(){
@@ -121,9 +136,7 @@
     },
 
     "_translation":{
-      "value":vec3.create(),
-      "configurable" : true,   
-      "writable": true
+      "value":vec3.create()
     },
     "translation": {
       "get" : function(){
@@ -137,9 +150,7 @@
     },
     
     "_scale":{
-      "value":vec3.create(),
-      "configurable" : true,   
-      "writable": true
+      "value":vec3.create()
     },
     "scale": {
       "get" : function(){
@@ -156,40 +167,13 @@
     },
     
     "flags":{
-      "value":{},
-      "configurable" : true,   
-      "writable": true
+      "value":{}
     },
     
-    "_children" : {
-      "value" :[],
+    "children" : {
+      "value" :new list(),
       "configurable" : true,   
       "writable": true
-    },
-    "children" : {
-      "get" : function(){
-        return this._children;
-      },
-      "set" : function(children){
-        if (list.isList(children)){
-          
-          this._children = children;
-          var self = this;
-          
-          children.itemAdded = function(item){
-            item._parent = self; 
-            self.flags.hasChildren = true;
-          };
-          
-          children.itemRemoved = function(item){
-            item._parent = undef;
-            if (children.length ===0){
-              self.flags.hasChildren = false;
-            }
-          };
-          
-        }
-      }
     },
     
     "_parent" : {
@@ -205,104 +189,90 @@
         if (parent !==this._parent){
           setParent(this,parent);
           this.setUpdateMatrixFlag();
-        };
+        }
       }
     },
     
     "_matrix" : {
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "matrix" : {
       "get" : function(){
         if (this.flags.UpdateMatrix){
           calculateUpdateMatrix(this);
-        };
+        }
         return this._matrix;
       }
     },
     
     "_worldScale" : {
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "worldScale" : {
       "get" : function(){
         if (this.flags.UpdateMatrix){
           calculateUpdateMatrix(this);
-        };
+        }
         return this._worldScale;
       }
     },
     
     "_worldTranslation" : {
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "worldTranslation" : {
       "get" : function(){
         if (this.flags.UpdateMatrix){
           calculateUpdateMatrix(this);
-        };
+        }
         return this._worldTranslation;
       }
     },
     
     "_worldRotation" : {
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "worldRotation" : {
       "get" : function(){
         if (this.flags.UpdateMatrix){
           calculateUpdateMatrix(this);
-        };
+        }
         return this._worldRotation;
       }
     },
     
     "_worldInfo" : {
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "worldInfo" : {
       "get" : function(){
         if (this.flags.UpdateMatrix){
           calculateUpdateMatrix(this);
-        };
+        }
         return this._worldInfo;
       }
     },
     
     "_boundingBox" : {
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "boundingBox" : {
       "get" : function(){
         if (this.flags.UpdateBoundingBox){
           calculateUpdateBoundingBox(this);
-        };
+        }
         return this._boundingBox;
       }
     },
     
     
-    "controllers" : {
-      "value":[],
-      "configurable" : true,   
-      "writable": true
+    "_controllers" : {
+      "value":new list()
     },
+    
+    
     "lastUpdate" : {
-      "value": -1,
-      "configurable" : true,   
-      "writable": true
+      "value": -1
     }
     
   });
@@ -311,20 +281,17 @@
   
   node.prototype.update = function(info){
     this.lastUpdate = info.counter;
-    
     var i,l = this.controllers.length;
 
     for(i = 0;i<l;i++){
       this.controllers[i].update(info);
     }  
-
-    if (this.flags.hasChildren ){
-      var i2,children = this.children,l2 = children.length;
-          
-      for(i2 = 0;i2<l2;i2++){
-        children[i2].update(info);
-      }
+    var i2,children = this.children,l2 = children.length;
+        
+    for(i2 = 0;i2<l2;i2++){
+      children[i2].update(info);
     }
+
   };
   
   node.prototype.render = function(info){
@@ -350,8 +317,7 @@
     addChildren(this,children);
   };
   node.prototype.addController = function(controller){
-    controller.node = this;
-    this.controllers.push(controller);
+    this.controllers.add(controller);
   };
   
   node.prototype.addChild = function(children){
@@ -380,13 +346,15 @@
   };
   
   var setUpdateMatrixFlag = function(node1){
-    var i,l,c;
+    var i,l,c,flags = node1.flags;
     if (!node1.flags.UpdateMatrix){
-      node1.flags.UpdateMatrix = true;
-      c = node1.children;
-      l = c.length;
-      for(i = 0;i <l;i++){
-        c[i].setUpdateMatrixFlag();
+      flags.UpdateMatrix = true;
+      if (flags.hasChildren){
+        c = node1.children;
+        l = c.length;
+        for(i = 0;i <l;i++){
+          c[i].setUpdateMatrixFlag();
+        }
       }
     }
   };
@@ -413,10 +381,9 @@
     if (node1.parent !==  undef){
       node1.removeParent();
     }
-    node1._parent = parent;
     
     if (parent !== undef) {
-      node1._parent._children.add(node1);
+      parent.children.add(node1);
     }
   };
 
@@ -470,11 +437,11 @@
   var destMatrix = mat4.create();
   var calculateUpdateMatrix = function(node1){
     
-    var parent = node1.parent;
+    var parent = node1._parent;
     
-    var node1Scale = node1.scale;
-    var node1Rotation =node1.rotation;
-    var node1Translation = node1.translation;
+    var node1Scale = node1._scale;
+    var node1Rotation =node1._rotation;
+    var node1Translation = node1._translation;
     
     
     var matrix = node1._matrix;
@@ -497,9 +464,9 @@
         vec3.add(node1WorldTranslation,parentWorldTranslation);
         
       } else {
-        vec3.set(node1._scale,node1WorldScale);
-        quat4.set(node1._rotation,node1WorldRotation);
-        vec3.set(node1._translation,node1WorldTranslation);
+        vec3.set(node1Scale,node1WorldScale);
+        quat4.set(node1Rotation,node1WorldRotation);
+        vec3.set(node1Translation,node1WorldTranslation);
       }
       
       mat4.compose(node1WorldTranslation,node1WorldRotation,node1WorldScale,matrix);

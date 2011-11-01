@@ -19,7 +19,7 @@
     this.program = args.program || "";
     this.stack = {};
     
-    Object.defineProperties(this,{
+    global.defineProperties(this,{
       "_changed" : {
         "value" : true,
         "configurable" : true,   

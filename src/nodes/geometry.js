@@ -5,8 +5,6 @@
   var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
   var NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY;
   
-  var vecs = vec3.createFixedPool(8);
-  
   var geometry = function geometry(args){
     //important to keep the prototypal chain clean
     if (args === undef){
@@ -26,8 +24,6 @@
   global.defineProperties(geometry.prototype,{
     "_mesh":{
       "value":undef,
-      "configurable" : true,   
-      "writable": true
     },
     "mesh": {
       "get" : function(){
@@ -115,54 +111,6 @@
       var b = geom1._boundingBox;
       
       mb.toAABB(matrix,b);
-      /*
-      mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.minZ],vecs[0]);
-      mat4.multiplyVec3(matrix,[mb.minX,mb.minY,mb.plusZ],vecs[1]);
-      
-      mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.minZ],vecs[2]);
-      mat4.multiplyVec3(matrix,[mb.minX,mb.plusY,mb.plusZ],vecs[3]);
-      
-      mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.minZ],vecs[4]);
-      mat4.multiplyVec3(matrix,[mb.plusX,mb.minY,mb.plusZ],vecs[5]);
-      
-      mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.minZ],vecs[6]);
-      mat4.multiplyVec3(matrix,[mb.plusX,mb.plusY,mb.plusZ],vecs[7]);
-      
-
-      
-      b.minX  = POSITIVE_INFINITY;
-      b.plusX = NEGATIVE_INFINITY;
-      
-      b.minY  = POSITIVE_INFINITY;
-      b.plusY = NEGATIVE_INFINITY;
-      
-      b.minZ  = POSITIVE_INFINITY;
-      b.plusZ = NEGATIVE_INFINITY;
-      
-      for (var i= 0,l= vecs.length;i<l;i++){
-        var vec =  vecs[i];
-        x = vec[0];
-        y = vec[1];
-        z = vec[2];
-        
-        if (x < b.minX){
-          b.minX = x;
-        } else if (x > b.plusX){
-          b.plusX = x;
-        }
-        
-        if (y < b.minY){
-          b.minY = y;
-        } else if (y > b.plusY){
-          b.plusY = y;
-        }
-        
-        if (z < b.minZ){
-          b.minZ = z;
-        } else if (z > b.plusZ){
-          b.plusZ = z;
-        }
-      }  */
     }
   };
   
