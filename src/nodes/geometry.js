@@ -20,7 +20,7 @@
   };
   
   global.inherit(node,geometry);
-  
+   
   global.defineProperties(geometry.prototype,{
     "_mesh":{
       "value":undef,
@@ -145,10 +145,9 @@
   geometry.create = function(args){
     return new geometry(args);
   };
-  
-  var nodeUpdate = node.prototype.update;
+  geometry.prototype.nodeUpdate = node.prototype.update;
   geometry.prototype.update = function(info){
-      nodeUpdate.call(this,info);
+      this.nodeUpdate(info);
       this.material.lastUpdate = info.counter;
   };
   

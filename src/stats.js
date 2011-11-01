@@ -35,7 +35,7 @@
     info.timeElapsed = newTime - prevTime;
     info.counter = this.counter;
     info.AvgTime = (newTime - firstTime)/99;
-    info.fps = parseInt(1000/info.AvgTime,10);
+    info.fps = parseInt(1000/info.AvgTime + 0.5,10);
     
   };
   
