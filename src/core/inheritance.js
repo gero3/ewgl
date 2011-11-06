@@ -39,7 +39,7 @@
       }
       
       Object.defineProperty(obj, prop,desc2);
-    };
+    }
   };
   
   global.defineProperties = function(obj,descriptors){

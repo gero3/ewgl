@@ -14,6 +14,12 @@
     this.top = new plane();
    
     this.planes = [this.near,this.far,this.left,this.right,this.bottom,this.top];
+    this._coefficients = [  this.near._coefficients,
+                            this.far._coefficients,
+                            this.left._coefficients,
+                            this.right._coefficients,
+                            this.bottom._coefficients,
+                            this.top._coefficients];
     this.cameraMatrix = mat4.create();
   };
   
@@ -87,14 +93,15 @@
   };
   
   
-  frustrum.prototype.isInFrustrum = function(position,scale,sphere){
-    
-		radius = -sphere.radius * Math.max( scale[0], Math.max( scale[1], scale[2] ) );
+  frustrum.prototype.isInFrustrum = function(position,scale,boundingSphere){
+    var positionx = position[0];
+    var positiony = position[1];
+    var positionz = position[2];
+    var distance,  radius = -boundingSphere._radius[0] * Math.max( scale[0], Math.max( scale[1], scale[2] ) );
 
 		for ( var i = 0; i < 6; i ++ ) {
-      var plane = this.planes[i];
-      var normal = plane.normal;
-			distance = normal[0] * position[0] + normal[1] * position[1] + normal[2] * position[2] + plane.distance;
+      var coefficients = this._coefficients[i];
+			distance = coefficients[0] * positionx + coefficients[1] * positiony + coefficients[2] * positionz + coefficients[3];
 			if ( distance <= radius ) return false;
 
 		}

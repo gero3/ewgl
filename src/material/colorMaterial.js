@@ -13,6 +13,7 @@
   
 
   var colorMaterial = new global.material({"shaderProgram":global.shaders.colorShader});
+
   
   colorMaterial.render = function(info){
     
@@ -22,14 +23,15 @@
         gl = renderer.gl,
         shaderProgram = this.shaderProgram,
         geom,mesh,geoms,size,matrix,cameraMatrix,
-        camera = colorMaterial.renderer.camera;
+        camera = colorMaterial.renderer.camera,
+        frustrum = camera.frustrum;
     
     shaderProgram.use();
 
     //setcameraMatrix
     gl.uniformMatrix4fv(shaderProgram.uniforms.pMatrixUniform, false, camera.perspective);
     gl.uniformMatrix4fv(shaderProgram.uniforms.cMatrixUniform, false, camera.inverseMatrix);
-    
+
     lights.vsShaderExtension.setShaderPieces(shaderProgram,lights.vsShaderExtension.calculateID());
     
     //render Geometries
@@ -57,6 +59,12 @@
         if (mesh.vertexbuffers.indices.flags.dataChanged){
           renderer.AdjustGLELMENTBuffer(mesh.vertexbuffers.indices);
         }
+        if(mesh.flags.boundingSphereChanged){
+          this.calculateBoundingSphere(mesh);
+        }
+        
+        var boundingSphere = mesh.boundingSphere; 
+
       
         gl.bindBuffer(gl.ARRAY_BUFFER,mesh.vertexbuffers.position.glObject);
         gl.vertexAttribPointer(shaderProgram.attributes.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
@@ -74,15 +82,19 @@
         size = mesh.vertexbuffers.indices.size;
         camera = colorMaterial.renderer.camera;
         cameraMatrix =  camera.matrix;
+
+
         for(j=0;j<geomLength;j++){
           geom = geoms[j];
-          if (geom.lastUpdate === this.lastUpdate && this.isInFrustrum(geom,mesh,camera)){
-            matrix =  geom.matrix;
+          var worldInfo = geom.worldInfo;
+          if (geom.lastUpdate === this.lastUpdate && frustrum.isInFrustrum(worldInfo.worldTranslation,worldInfo.worldScale,boundingSphere)){
+            matrix = worldInfo.matrix;
 
             gl.uniformMatrix4fv(shaderProgram.uniforms.mvMatrixUniform, false, matrix);
             
             var test = mat4.multiply(cameraMatrix,matrix,testMatrix4);
-            var test2 = mat4.toMat3(inverse(test),testMatrix3);
+            var test2 = mat4.toInverseMat3(test, testMatrix3);
+            // = mat4.toMat3(inverse(test),testMatrix3);
             test2 = mat3.transpose(test2);
             
             gl.uniformMatrix3fv(shaderProgram.uniforms.NMatrixUniform, false, test2);   

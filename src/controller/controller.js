@@ -5,7 +5,7 @@
     this._node =args.node || undef;  
   };
   
-  Object.defineProperties(controller.prototype,{
+  EWGL.defineProperties(controller.prototype,{
     "node" : {
       "get" : function(){
         return this._node;

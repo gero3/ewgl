@@ -3,9 +3,18 @@
     
     var plane = function(args) {
         
-        this.normal = vec3.create();
-        this.distance = 0;
-        
+        this._coefficients =  new Float32Array(4);
+        this.normal = new Float32Array(this._coefficients.buffer,0,3);
+        global.defineProperties(this,{
+          "distance":{
+            "get": function(){
+              return this._coefficients[3];
+            },
+            "set":function(value){
+              this._coefficients[3] = value;
+            }
+          }
+        });        
     };
     
     plane.prototype.setCoefficients = function(a,b,c,d){

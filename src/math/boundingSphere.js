@@ -1,11 +1,32 @@
 (function(global){
 
   var boundingSphere = function(){
-      
-    this.radius = 0;
-    this.radiusSquared = 0;
+    
+    this._radius = new Float32Array(1);
+    this._radiusSquared = new Float32Array(1);    
+    
+    global.defineProperties(this,{
+      "radius":{
+        "get": function(){
+          return this._radius[0];
+        },
+        "set":function(value){
+          this._radius[0] = value;
+        }
+      },
+      "radiusSquared":{
+        "get": function(){
+          return this._radiusSquared[0];
+        },
+        "set":function(value){
+          this._radiusSquared[0] = value;
+        }
+      }
+    });
       
   };
+  
+  
   
   boundingSphere.prototype.getBoundingFromPoints = function(points){
     var x=0,
@@ -13,7 +34,7 @@
         z=0,
         radiusSq=0,
         checkSq=0,
-        size = points.length;;
+        size = points.length;
         
     for(var i = 0;i<size;i+=3){
         

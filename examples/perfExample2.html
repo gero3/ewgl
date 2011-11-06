@@ -121,7 +121,21 @@
         
     </script>
     <script> 
+      var getgetrequests = function(){
+        var get = document.location.search,
+            ret = {},
+            split = get.replace('?', '').split('&'),
+            i = split.length,help;
+        while (i--){
+          help = split[i].split('=');
+          ret[help[0]] = help[1];
+        }   
+        return ret;
+      };
       
+      var getrequests = getgetrequests();
+      
+      var nbOfSpheres = getrequests["spheres"] || 5000;
     </script>
     <script> 
     
@@ -133,32 +147,35 @@
       camera.addController(new EWGL.distanceAngleController({}));      
       
       var objects = rootNode.attachNewNode({"name":"objects"}); 
-      objects.addController(new EWGL.positionController({"rpm":10,"axis":[0,1,0]}));
+      //objects.addController(new EWGL.positionController({"rpm":10,"axis":[0,1,0]}));
       
       rootNode.attachNewDirectionalLight({"name":"Light1","color":[1,1,1],"direction":[0.0, 10.0, 35.0]}); 
+      
+      performanceApp.mainLight.color = [0,0,0];
       
       var sphere = rootNode.attachNewSphere({"name":"test",
                                             "material": EWGL.colorMaterial,
                                             "latitudeBands": 9,
                                             "longitudeBands": 9
                                           });
-      sphere.setColor([0.7,0.7,0.7]);
+      sphere.setColor([0.1,0.2,0.3]);
         var monkey = objects.attachNewSphere({"name":"Sphere",
                                           "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
                                           "scale":Math.random(),
                                           "material": EWGL.colorMaterial,
-                                          "latitudeBands": 20,
-                                          "longitudeBands": 20
+                                          "latitudeBands": 9,
+                                          "longitudeBands": 9
         });
         monkey.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
-      
-      for(var i = 0;i<5000;i++){
+        
+      for(var i = 0;i<nbOfSpheres-1;i++){
         var monkey = objects.attachNewGeometry({"name":"Sphere" + i.toString(),
                                           "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
                                           "scale":Math.random(),
                                           "material": EWGL.colorMaterial,
                                           "mesh":monkey.mesh
         });
+        //monkey.addController(new EWGL.positionController({"rpm":100,"axis":[1,1,0]}));
       };
       
       

@@ -57,11 +57,14 @@
                               },
                               function(item){
                                 item._parent = undef;
-                                if (children.length ===0){
+                                if (self.children.length ===0){
                                   self.flags.hasChildren = false;
                                 }
                               });
-          
+                              
+    if (self.children.length ===0){
+      self.flags.hasChildren = false;
+    }      
     
     return this;
   };
@@ -302,7 +305,17 @@
   };
   
   node.prototype.setUpdateMatrixFlag = function(){
-    setUpdateMatrixFlag(this);
+    var flags = this.flags;
+    if (!flags.UpdateMatrix){
+      flags.UpdateMatrix = true;
+      if (flags.hasChildren){
+        var children = this.children,
+        l = children.length;
+        for(var i = 0;i <l;i++){
+          children[i].setUpdateMatrixFlag();
+        }
+      }
+    }
   };
   
   node.prototype.setUpdateBoundingBoxFlag = function(){
@@ -341,20 +354,6 @@
       node1.flags.UpdateBoundingBox = true;
       if (node1.parent){
         node1.parent.setUpdateBoundingBoxFlag();
-      }
-    }
-  };
-  
-  var setUpdateMatrixFlag = function(node1){
-    var i,l,c,flags = node1.flags;
-    if (!node1.flags.UpdateMatrix){
-      flags.UpdateMatrix = true;
-      if (flags.hasChildren){
-        c = node1.children;
-        l = c.length;
-        for(i = 0;i <l;i++){
-          c[i].setUpdateMatrixFlag();
-        }
       }
     }
   };
@@ -437,19 +436,20 @@
   var destMatrix = mat4.create();
   var calculateUpdateMatrix = function(node1){
     
-    var parent = node1._parent;
-    
-    var node1Scale = node1._scale;
-    var node1Rotation =node1._rotation;
-    var node1Translation = node1._translation;
-    
-    
-    var matrix = node1._matrix;
-    var node1WorldScale = node1._worldScale;
-    var node1WorldRotation = node1._worldRotation;
-    var node1WorldTranslation = node1._worldTranslation;
-    
     if(node1.flags.UpdateMatrix){
+      
+      var parent = node1._parent;
+      
+      var node1Scale = node1._scale;
+      var node1Rotation =node1._rotation;
+      var node1Translation = node1._translation;
+      
+      
+      var matrix = node1._matrix;
+      var node1WorldScale = node1._worldScale;
+      var node1WorldRotation = node1._worldRotation;
+      var node1WorldTranslation = node1._worldTranslation;
+    
       if (parent){
         var worldInfo = parent.worldInfo;
         var parentWorldScale = worldInfo.worldScale;

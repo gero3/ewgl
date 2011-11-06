@@ -110,17 +110,12 @@
     mesh.addNewVertexbuffer({"type" :"normal",
                             "data" :normal});
   };
-  
-  p.isInFrustrum = function(geom,mesh,camera) {
-    if (mesh.flags.boundingSphereChanged){
+  p.calculateBoundingSphere = function(mesh){
       if (!mesh.boundingSphere){
         mesh.boundingSphere = new global.boundingSphere();
       }
       mesh.boundingSphere.getBoundingFromPoints( mesh.vertexbuffers.position.getData() );
-      mesh.flags.boundingSphereChanged = false;       
-    }
-    var worldInfo = geom.worldInfo;
-    return camera.frustrum.isInFrustrum(worldInfo.worldTranslation,worldInfo.worldScale,mesh.boundingSphere);
+      mesh.flags.boundingSphereChanged = false;
   };
 
  global.material = material;

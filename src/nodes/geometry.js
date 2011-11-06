@@ -23,7 +23,7 @@
    
   global.defineProperties(geometry.prototype,{
     "_mesh":{
-      "value":undef,
+      "value":undef
     },
     "mesh": {
       "get" : function(){
@@ -51,9 +51,7 @@
       }
     }, 
     "_material":{
-      "value":undef,
-      "configurable" : true,   
-      "writable": true
+      "value":undef
     },
     "material": {
       "get" : function(){
@@ -82,9 +80,7 @@
       }
     },
     "_boundingBox" : {
-      "value" : undef,
-      "configurable" : true,   
-      "writable": true
+      "value" : undef
     },
     "boundingBox" : {
       "get" : function(){
@@ -148,7 +144,7 @@
   geometry.prototype.nodeUpdate = node.prototype.update;
   geometry.prototype.update = function(info){
       this.nodeUpdate(info);
-      this.material.lastUpdate = info.counter;
+      this._material.lastUpdate = info.counter;
   };
   
   global.node.prototype.attachNewGeometry = function(args){
