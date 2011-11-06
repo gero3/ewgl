@@ -1,55 +1,44 @@
 (function(global){
   
   var loader = global.loader;
-  
-  var loading = [];
+  var loaderCollection = global.loaderCollection;
   
   var imageLoader = function(args){
-    loader.counter += 1;
+    loader.call(this,args);
+  };
+  
+  global.inherit(loader,imageLoader);
+  
+  imageLoader.prototype.load = function(args){
+    var self = this;
+    var url = args.url;
     
-    args = args || {};
+    self.onLoadStart(url);
     
-    var img = args.image || new Image();
-    var argsToSent = {"image":img};
-    img.onload = createOnCompleteCallback(args.onComplete,argsToSent);
-    img.onerror =  createOnErrorCallback(args.onError,argsToSent);
-    
-    if (args.url.indexOf("http") !== -1) {
+    var img = args.img || new Image();
+    if (url.indexOf("http") !== -1) {
       img.crossOrigin = '';
     }
     
-    img.src = args.url;
-    return img;
-  };
-  
-  var createOnCompleteCallback = function(onComplete,args){
-    return function(){
-      if (onComplete){
-        onComplete(args);
-      } else {
-        loader.onComplete(args);
-      }
-      loader.counter -= 1;
-    }; 
-  };
-  
-  var createOnErrorCallback = function(onError,args){
-    return function(){
-      if (onError){
-        onError(args);
-      } else {
-        loader.onError(args);
-      }
-      loader.counter -= 1;
+    img.onload = function(){
+      self.onDownloadComplete(img);
+      self.onLoadComplete(img);
     };
+    
+    img.onerror = function(){
+      self.onError();
+    };
+    
+    self.onDownloadStart(url);
+    img.src = url;
+
   };
   
-  loader.loadImage = function(args){
-    return imageLoader(args);
-  };
+
   
-  loader.addLoader({  "loader" : imageLoader,
-                      "extensions": ["JPG","PNG","GIF"]
-                  });
+  var options = {};
+  options.property = "loadImage";
+  loaderCollection.addLoader(imageLoader,options);
+  
   
 }(EWGL));

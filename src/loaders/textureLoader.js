@@ -1,42 +1,37 @@
 (function(global){
   
   var loader = global.loader;
+  var loaderCollection = global.loaderCollection;
   var Texture = global.texture;
-  var replacementImage = new Image();
   
   var textureLoader = function(args){
-    
+    loader.call(this,args);
+  };
+  
+  global.inherit(loader,textureLoader);
+  
+  textureLoader.prototype.load = function(args){
+    var self = this;
+    self.onLoadStart();
     var texture = new Texture();
-    var arg = {};
-    arg.url = args.url;
-    arg.onComplete = createOnCompleteCallback(args.onComplete,{"texture": texture});
-    arg.onError = createOnErrorCallback(args.onError,{"texture": texture});
-    texture.image = loader.loadImage(arg);
     
-    return texture;
-  };
-  
-  var createOnCompleteCallback = function(onComplete,args){
-    return function(){
-      if (onComplete){
-        onComplete(args);
-      }
-      args.texture.flags.imageLoaded = true;
-    }; 
-  };
-  
-  var createOnErrorCallback = function(onError,args){
-    return function(){
-      if (onError){
-        onError(args);
-      }
+    var onLoadComplete = function(img){
+      texture.image = img;
+      texture.flags.imageLoaded = true;
+      self.onLoadComplete(texture);
     };
+                    
+    var options = { "url":args.url,
+                    "onDownloadStart": args.onDownloadStart,
+                    "onDownloadComplete": args.onDownloadComplete,                    
+                    "onLoadComplete": onLoadComplete,
+                    "onError" :args.onError};
+    loaderCollection.loadImage(options);
   };
+
   
-  loader.loadTexture = function(args){
-    return textureLoader(args);
-  };
-  
-  loader.addLoader({  "loader" : textureLoader});
+  var options = {};
+  options.property = "loadTexture";
+  loaderCollection.addLoader(textureLoader,options);
   
 }(EWGL));

@@ -70,7 +70,7 @@
     fn.prototype = superObj.prototype;
     childObj.prototype = new fn();
     
-    
+    /*
     var props = Object.getOwnPropertyNames(superObj.prototype);
     var length = props.length;
     for(var i = 0;i<length;i++){
@@ -79,6 +79,7 @@
         global.defineProperty(childObj.prototype, name, Object.getOwnPropertyDescriptor(superObj.prototype , name));
       }
     }
+    */
     
   };
     

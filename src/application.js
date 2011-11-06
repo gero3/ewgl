@@ -29,12 +29,7 @@
       
       this.stats = new global.stats();
       
-      this.assetManager = global.loader;
-      this.assetManager.onLoadedCompleted = (function(self) {
-        return function() {
-          self.startRendering();
-        };
-      }(this));
+      this.assetManager = global.loaderCollection;
       
       if (args && args.canvas){
         var canvas = document.getElementById(args.canvas.id);

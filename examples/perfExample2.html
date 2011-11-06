@@ -57,9 +57,11 @@
     <script src="../src/primitives/skybox.js"></script>  
     <script src="../src/primitives/boundingBoxOutline.js"></script>
  
+    <script src="../src/loaders/loadercollection.js"></script>
     <script src="../src/loaders/loader.js"></script> 
     <script src="../src/loaders/imageLoader.js"></script>
     <script src="../src/loaders/textureLoader.js"></script>
+    <script src="../src/loaders/webworkerLoader.js"></script>
     
     <script src="../src/controller/controller.js"></script> 
     <script src="../src/controller/positioncontroller.js"></script> 
@@ -69,7 +71,7 @@
     <script src="../src/stats.js"></script> 
     <script src="../src/application.js"></script>
     
-    <script src="threejsLoader.js"></script>
+    <script src="js/threejsLoader.js"></script>
     <style type="text/css"> 
     canvas {
       display: block;
@@ -142,6 +144,7 @@
       var performanceApp = new EWGL.app();
       var rootNode = performanceApp.rootNode;
       var camera = performanceApp.camera;
+      var asset = performanceApp.assetManager;
       
       camera.translation = [0.0, 0.0, 35.0];
       camera.addController(new EWGL.distanceAngleController({}));      
@@ -159,24 +162,24 @@
                                             "longitudeBands": 9
                                           });
       sphere.setColor([0.1,0.2,0.3]);
-        var monkey = objects.attachNewSphere({"name":"Sphere",
-                                          "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
-                                          "scale":Math.random(),
-                                          "material": EWGL.colorMaterial,
-                                          "latitudeBands": 9,
-                                          "longitudeBands": 9
-        });
-        monkey.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
-        
-      for(var i = 0;i<nbOfSpheres-1;i++){
-        var monkey = objects.attachNewGeometry({"name":"Sphere" + i.toString(),
-                                          "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
-                                          "scale":Math.random(),
-                                          "material": EWGL.colorMaterial,
-                                          "mesh":monkey.mesh
-        });
-        //monkey.addController(new EWGL.positionController({"rpm":100,"axis":[1,1,0]}));
+      
+      
+      var onLoadComplete = function(mesh){
+        for(var i = 0;i<nbOfSpheres;i++){
+          var monkey = objects.attachNewGeometry({"name":"Sphere" + i.toString(),
+                                            "translation":[Math.random()*50-25,Math.random()*50-25,Math.random()*50-25],
+                                            "scale":Math.random(),
+                                            "material": EWGL.colorMaterial,
+                                            "mesh":mesh
+          });
+          monkey.setColor([Math.random()*0.5+0.5,Math.random()*0.5+0.5,Math.random()*0.5+0.5]);
+        };
       };
+      
+      asset.loadThreejs({ "url":"obj/threejsmonkey.js",
+                            "onLoadComplete" : onLoadComplete,
+                            "onError" : function(data){console.log(data);}
+      });
       
       
       
@@ -186,6 +189,8 @@
                                                         "<p> Frustrumculled Objects: " + info.frustrumCulled + " <\p>";
       };                                                  
       performanceApp.startRendering();
+      
+
       
     </script> 
   </body> 
